@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.greyu.ysj.mapper.GoodMapper" >
+  <resultMap id="BaseResultMap" type="com.greyu.ysj.entity.Good" >
+    <id column="good_id" property="goodId" jdbcType="INTEGER" />
+    <result column="category_second_id" property="categorySecondId" jdbcType="INTEGER" />
+    <result column="good_name" property="goodName" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="original_price" property="originalPrice" jdbcType="DOUBLE" />
+    <result column="inventory" property="inventory" jdbcType="INTEGER" />
+    <result column="sold_count" property="soldCount" jdbcType="INTEGER" />
+    <result column="spec" property="spec" jdbcType="VARCHAR" />
+    <result column="origin" property="origin" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="images" property="images" jdbcType="VARCHAR" />
+    <result column="postage" property="postage" jdbcType="DOUBLE" />
+    <result column="deadline" property="deadline" jdbcType="DATE" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="price_user" property="priceUser" jdbcType="INTEGER" />
+    <result column="price_date" property="priceDate" jdbcType="DATE" />
+    <result column="price_count" property="priceCount" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="stock_count" property="stockCount" jdbcType="INTEGER" />
+    <result column="supplier" property="supplier" jdbcType="INTEGER" />
+    <collection property="orders" column="good_id" select="findOrdersByGood" />
+  </resultMap>
+  <resultMap id="OrderResultMap" type="com.greyu.ysj.entity.Order" >
+    <id column="order_id" property="orderId" jdbcType="BIGINT" />
+    <result column="good_id" property="goodId" jdbcType="INTEGER" />
+    <result column="buy_date" property="buyDate" jdbcType="DATE" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="buy_price" property="buyPrice" jdbcType="DOUBLE" />
+    <result column="ship_date" property="shipDate" jdbcType="DATE" />
+    <result column="buy_count" property="buyCount" jdbcType="INTEGER" />
+    <result column="buyer" property="buyer" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="buyer_name" property="buyerName" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    good_id, category_second_id, good_name, image, price, original_price, inventory, 
+    sold_count, spec, origin, type, images, postage, deadline, description, price_user, price_date, price_count, status, stock_count, supplier
+  </sql>
+  <sql id="Order_Column_List">
+  	order_id, status, good_id, buy_date, buy_count, type, buy_price, ship_date, buyer
+  </sql>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  
+  <select id="selectByType" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_good where type=#{goodType}
+  </select>
+  <select id="selectSupplierGoodsByStatus" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_good where status=#{status} and supplier_user = #{userId}
+  </select>
+  <select id="selectSupplierPaidGoods" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_good where status in ('待支付','待发货','待签收') and supplier_user = #{userId}
+  </select>
+  <select id="selectBySupplier" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_good where supplier_user = #{userId}
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.greyu.ysj.entity.GoodExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_good
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_good
+    where good_id = #{goodId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByBuyer" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_good
+  	where price_user = #{userId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_good
+    where good_id = #{goodId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.greyu.ysj.entity.GoodExample" >
+    delete from tb_good
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  
+  <insert id="insertSelective" parameterType="com.greyu.ysj.entity.Good" >
+    insert into tb_good
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="goodId != null" >
+        good_id,
+      </if>
+      <if test="categorySecondId != null" >
+        category_second_id,
+      </if>
+      <if test="goodName != null" >
+        good_name,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="originalPrice != null" >
+        original_price,
+      </if>
+      <if test="inventory != null" >
+        inventory,
+      </if>
+      <if test="soldCount != null" >
+        sold_count,
+      </if>
+      <if test="spec != null" >
+        spec,
+      </if>
+      <if test="origin != null" >
+        origin,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="images != null" >
+        images,
+      </if>
+      <if test="postage != null" >
+        postage,
+      </if>
+      <if test="deadline != null" >
+        deadline,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="goodId != null" >
+        #{goodId,jdbcType=INTEGER},
+      </if>
+      <if test="categorySecondId != null" >
+        #{categorySecondId,jdbcType=INTEGER},
+      </if>
+      <if test="goodName != null" >
+        #{goodName,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="originalPrice != null" >
+        #{originalPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="inventory != null" >
+        #{inventory,jdbcType=INTEGER},
+      </if>
+      <if test="soldCount != null" >
+        #{soldCount,jdbcType=INTEGER},
+      </if>
+      <if test="spec != null" >
+        #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null" >
+        #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="images != null" >
+        #{images,jdbcType=VARCHAR},
+      </if>
+      <if test="postage != null" >
+        #{postage,jdbcType=DOUBLE},
+      </if>
+      <if test="deadline != null" >
+        #{deadline,jdbcType=DATE},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.greyu.ysj.entity.GoodExample" resultType="java.lang.Integer" >
+    select count(*) from tb_good
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  
+  <update id="updateByExampleSelective" parameterType="map" >
+    update tb_good
+    <set >
+      <if test="record.goodId != null" >
+        good_id = #{record.goodId,jdbcType=INTEGER},
+      </if>
+      <if test="record.categorySecondId != null" >
+        category_second_id = #{record.categorySecondId,jdbcType=INTEGER},
+      </if>
+      <if test="record.goodName != null" >
+        good_name = #{record.goodName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.image != null" >
+        image = #{record.image,jdbcType=VARCHAR},
+      </if>
+      <if test="record.price != null" >
+        price = #{record.price,jdbcType=DOUBLE},
+      </if>
+      <if test="record.originalPrice != null" >
+        original_price = #{record.originalPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="record.inventory != null" >
+        inventory = #{record.inventory,jdbcType=INTEGER},
+      </if>
+      <if test="record.soldCount != null" >
+        sold_count = #{record.soldCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.spec != null" >
+        spec = #{record.spec,jdbcType=VARCHAR},
+      </if>
+      <if test="record.origin != null" >
+        origin = #{record.origin,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update tb_good
+    set good_id = #{record.goodId,jdbcType=INTEGER},
+      category_second_id = #{record.categorySecondId,jdbcType=INTEGER},
+      good_name = #{record.goodName,jdbcType=VARCHAR},
+      image = #{record.image,jdbcType=VARCHAR},
+      price = #{record.price,jdbcType=DOUBLE},
+      original_price = #{record.originalPrice,jdbcType=DOUBLE},
+      inventory = #{record.inventory,jdbcType=INTEGER},
+      sold_count = #{record.soldCount,jdbcType=INTEGER},
+      spec = #{record.spec,jdbcType=VARCHAR},
+      origin = #{record.origin,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.greyu.ysj.entity.Good" >
+    update tb_good
+    <set >
+      <if test="categorySecondId != null" >
+        category_second_id = #{categorySecondId,jdbcType=INTEGER},
+      </if>
+      <if test="goodName != null" >
+        good_name = #{goodName,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="originalPrice != null" >
+        original_price = #{originalPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="inventory != null" >
+        inventory = #{inventory,jdbcType=INTEGER},
+      </if>
+      <if test="soldCount != null" >
+        sold_count = #{soldCount,jdbcType=INTEGER},
+      </if>
+      <if test="spec != null" >
+        spec = #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null" >
+        origin = #{origin,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where good_id = #{goodId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.greyu.ysj.entity.Good" >
+    update tb_good
+    set category_second_id = #{categorySecondId,jdbcType=INTEGER},
+      good_name = #{goodName,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      original_price = #{originalPrice,jdbcType=DOUBLE},
+      inventory = #{inventory,jdbcType=INTEGER},
+      sold_count = #{soldCount,jdbcType=INTEGER},
+      spec = #{spec,jdbcType=VARCHAR},
+      origin = #{origin,jdbcType=VARCHAR}
+    where good_id = #{goodId,jdbcType=INTEGER}
+  </update>
+  <update id="updateAuction">
+  	update tb_good
+  	set price_user = #{priceUser, jdbcType=INTEGER},
+  		price_date = #{priceDate, jdbcType=DATE},
+  		price = #{price, jdbcType=DOUBLE},
+  		price_count = #{priceCount, jdbcType=INTEGER}
+  	where good_id = #{goodId, jdbcType=INTEGER}
+  </update>
+  
+  <!-- ********************* -->
+  <select id="findByType" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+  	<include refid="Base_Column_List"/>
+  	from tb_good where type = #{type} and status = '拍卖中'
+  </select>
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_good where good_id = #{goodId}
+  </select>
+  <select id="findSupplierGoodsByStatus" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_good where status = #{status} and supplier = #{supplier}
+  </select>
+  <select id="findOrdersByGood" parameterType="java.lang.Integer" resultMap="OrderResultMap">
+  	select t1.order_id, t1.status, t1.good_id, t1.buy_date, t1.buy_count, t1.type, t1.buy_price, t1.ship_date, t1.buyer, 
+  	t2.nick_name buyer_name, t2.phone phone, t2.address address
+  	from tb_order t1 inner join tb_user t2 on t1.buyer = t2.user_id  
+  	where good_id = #{goodId} order by t1.buy_price desc
+  </select>
+  <select id="searchByKeyword" resultMap="BaseResultMap" >
+  	select 
+  	<include refid="Base_Column_List"/>
+  	from tb_good where good_name like #{keyword}
+  </select>
+  <select id="searchByCategory" resultMap="BaseResultMap" >
+  	select 
+  	<include refid="Base_Column_List"/>
+  	from tb_good where category_second_id = #{category}
+  </select>
+  <insert id="insert" parameterType="com.greyu.ysj.entity.Good" >
+    insert into tb_good (
+    	good_name,
+      	price,
+      	type, 
+      	supplier,
+      	images,
+      	category_second_id,
+      	postage,
+      	stock_count,
+      	description,
+      	deadline,
+      	status,
+      	payment)
+    values (
+    	#{goodName,jdbcType=VARCHAR},
+    	#{price,jdbcType=DOUBLE},
+    	#{type,jdbcType=VARCHAR},
+    	#{supplier,jdbcType=INTEGER},
+    	#{images,jdbcType=VARCHAR},
+    	#{categorySecondId,jdbcType=INTEGER}, 
+    	#{postage,jdbcType=DOUBLE},
+    	#{stockCount,jdbcType=INTEGER},
+		#{description,jdbcType=VARCHAR},
+		#{deadline,jdbcType=DATE},
+		#{status,jdbcType=VARCHAR},
+		#{payment,jdbcType=VARCHAR})
+  </insert>
+</mapper>

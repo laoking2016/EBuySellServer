@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.greyu.ysj.mapper.QuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.greyu.ysj.entity.Question" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="question" property="question" jdbcType="VARCHAR" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="good_id" property="goodId" jdbcType="INTEGER" />
+    <result column="question_user" property="questionUser" jdbcType="INTEGER" />
+    <result column="answer_user" property="answerUser" jdbcType="INTEGER" />
+    <result column="question_date" property="questionDate" jdbcType="DATE" />
+    <result column="answer_date" property="answerDate" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, question, answer, good_id, question_user, answer_user, question_date, answer_date
+  </sql>
+  
+  <select id="selectByGoodId" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from tb_question
+  	where good_id = #{goodId}
+  	order by question_date desc, answer_date desc
+  </select>
+  <!-- ************************************************ -->
+  <select id="findByGoodId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_question
+  	where good_id = #{goodId}
+  	order by question_date desc, answer_date desc
+  </select>
+  <insert id="insert" parameterType="com.greyu.ysj.entity.Question">
+  	insert into tb_question (
+  		question,
+  		answer,
+  		good_id,
+  		question_user,
+  		answer_user,
+  		question_date,
+  		answer_date
+  	) values (
+  		#{question, jdbcType=VARCHAR},
+  		#{answer, jdbcType=VARCHAR},
+  		#{goodId, jdbcType=INTEGER},
+  		#{questionUser, jdbcType=INTEGER},
+  		#{answerUser, jdbcType=INTEGER},
+  		#{questionDate, jdbcType=DATE},
+  		#{answerDate, jdbcType=DATE}
+  	)
+  </insert> 
+  <update id="update" parameterType="com.greyu.ysj.entity.Question">
+  	update tb_question
+  	set answer = #{answer}, answer_user = #{answerUser}, answer_date = #{answerDate}
+  	where id = #{id}
+  </update>
+</mapper>

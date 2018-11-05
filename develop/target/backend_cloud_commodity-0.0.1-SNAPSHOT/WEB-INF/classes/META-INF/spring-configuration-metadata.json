@@ -1,0 +1,19 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.greyu.ysj.storage.StorageProperties",
+      "name": "storage",
+      "type": "com.greyu.ysj.storage.StorageProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.greyu.ysj.storage.StorageProperties",
+      "defaultValue": "\/data\/wwwroot\/default\/upload_dir",
+      "name": "storage.location",
+      "description": "Folder location for storing files",
+      "type": "java.lang.String"
+    }
+  ]
+}
