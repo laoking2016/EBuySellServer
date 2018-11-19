@@ -12,8 +12,7 @@ public interface UserMapper {
 
     int deleteByPrimaryKey(Integer userId);
 
-    int insert(User record);
-
+    
     int insertSelective(User record);
 
     List<User> selectByExample(UserExample example);
@@ -29,7 +28,8 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
     
     /***********************************************************/
-    
+    User findByOpenId(String openId);
+    int insert(User record);
     User findById(Integer userId);
     List<User> findBySupplier(Integer supplier);
     User findByName(String name);

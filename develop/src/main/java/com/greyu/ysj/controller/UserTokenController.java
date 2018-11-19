@@ -34,14 +34,11 @@ public class UserTokenController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<ResultModel> login(String userName, String passWord) {
-        System.out.println(userName);
-        System.out.println(passWord);
+    	
         if (null == userName || null == passWord) {
             return new ResponseEntity<ResultModel>(ResultModel.error(ResultStatus.DATA_NOT_NULL), HttpStatus.BAD_REQUEST);
         }
 
-        //User user = this.userService.selectByUserName(userName);
-        
         User user = this.userMapper.findByName(userName);
 
         if (null == user || // 未注册

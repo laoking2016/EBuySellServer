@@ -1,6 +1,9 @@
 package com.greyu.ysj.controller;
 
 import com.greyu.ysj.authorization.annotation.Authorization;
+import com.greyu.ysj.authorization.manager.TokenManager;
+import com.greyu.ysj.authorization.model.TokenModel;
+import com.greyu.ysj.authorization.model.WechatApiResult;
 import com.greyu.ysj.config.Constants;
 import com.greyu.ysj.config.ResultStatus;
 import com.greyu.ysj.entity.User;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.Request;
 
@@ -50,16 +54,7 @@ public class UserController {
         return new ResponseEntity<ResultModel>(ResultModel.ok(user), HttpStatus.OK);
     }
 
-    @RequestMapping(value= "/user/v1/user", method = RequestMethod.POST)
-    public ResponseEntity<ResultModel> addUser(@RequestBody User user) {
-        ResultModel resultModel = this.userService.addUser(user);
-
-        if (resultModel.getCode() == -1005) {
-            return new ResponseEntity<>(resultModel, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(resultModel, HttpStatus.CREATED);
-    }
-
+    
     @RequestMapping(value = "/admin/v1/user/{userId}", method = RequestMethod.DELETE)
     @Authorization
     public ResponseEntity<ResultModel> deleteUser(@PathVariable Integer userId) {
@@ -113,6 +108,55 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
     
+    @Autowired
+    private RestTemplate restTemplate;
+    
+    @Autowired
+    private TokenManager tokenManager;
+    
+    @RequestMapping(value = "/user/v2/user/wechat/login", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> wechatLogin(@RequestParam("openId") String openId, @RequestParam("accessToken") String accessToken){
+    	
+    	/*WechatApiResult wechatResult = 
+    			restTemplate.getForObject(String.format("https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s", accessToken, openId), WechatApiResult.class);
+    	
+    	if(wechatResult.getErrcode() != 0) {
+    		return new ResponseEntity<>(ResultModel.error(ResultStatus.USERNAME_OR_PASSWORD_ERROR), HttpStatus.NOT_FOUND);
+    	}*/
+    	
+    	User user = this.userMapper.findByOpenId(openId);
+    	
+    	if(user == null) {
+    		return new ResponseEntity<>(ResultModel.error(ResultStatus.USER_NOT_FOUND), HttpStatus.NOT_FOUND);
+    	}
+    	
+    	// 生成一个token，保存用户登录状态
+        TokenModel model = this.tokenManager.createToken(user.getUserId());
+        model.setRole(user.getRole());
+        return new ResponseEntity<>(ResultModel.ok(model), HttpStatus.OK);
+    }
+    
+    
+    @RequestMapping(value= "/user/v2/user", method = RequestMethod.POST)
+    public ResponseEntity<ResultModel> addUser(@RequestBody User user) {
+    	
+    	if(user.getOpenId() != null && this.userMapper.findByName(user.getUserName()) != null){
+    		return new ResponseEntity<>(ResultModel.error(ResultStatus.USERNAME_HAS_EXISTS), HttpStatus.CREATED);
+    	}
+    	
+        this.userMapper.insert(user);
+        
+        if(user.getOpenId() != null) {
+        	user = this.userMapper.findByOpenId(user.getOpenId());
+        }else {
+        	user = this.userMapper.findByName(user.getUserName());
+        }
+        
+        TokenModel model = this.tokenManager.createToken(user.getUserId());
+        model.setRole(user.getRole());
+        return new ResponseEntity<>(ResultModel.ok(model), HttpStatus.CREATED);
+    }
+    
     @RequestMapping(value = "/user/v2/user/{userId}", method = RequestMethod.GET)
     @Authorization
     public ResponseEntity<ResultModel> findById(@PathVariable Integer userId) {
@@ -135,4 +179,5 @@ public class UserController {
 
     	return new ResponseEntity<ResultModel>(ResultModel.ok(users), HttpStatus.OK);
     }
+    
 }

@@ -11,6 +11,7 @@
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
     <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="role" property="role" jdbcType="VARCHAR"/>
+    <result column="open_id" property="openId" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -70,9 +71,7 @@
       </foreach>
     </where>
   </sql>
-  <sql id="Base_Column_List" >
-    user_id, user_name, pass_word, phone, avatar, sex, nick_name, address, role
-  </sql>
+  
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.greyu.ysj.entity.UserExample" >
     select
     <if test="distinct" >
@@ -103,14 +102,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.greyu.ysj.entity.User" >
-    insert into tb_user (user_id, user_name, pass_word, 
-      phone, avatar, sex, 
-      nick_name)
-    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=BIGINT}, #{avatar,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
-      #{nickName,jdbcType=VARCHAR})
-  </insert>
+  
   <insert id="insertSelective" parameterType="com.greyu.ysj.entity.User" >
     insert into tb_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -268,6 +260,20 @@
   </update>
   
   <!-- **************************************************** -->
+  <sql id="Base_Column_List" >
+    user_id, user_name, pass_word, phone, avatar, sex, nick_name, address, role, open_id
+  </sql>
+  <insert id="insert" parameterType="com.greyu.ysj.entity.User" >
+    insert into tb_user (user_name, pass_word, phone, sex, avatar, nick_name, birth, email, address, referee, role, open_id)
+    values (#{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, #{phone,jdbcType=BIGINT}, #{sex,jdbcType=VARCHAR}, 
+    		#{avatar,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{birth,jdbcType=DATE}, #{email,jdbcType=VARCHAR}, 
+    		#{address,jdbcType=VARCHAR}, #{referee,jdbcType=INTEGER}, #{role,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR})
+  </insert>
+  <select id="findByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_user where open_id = #{openId}
+  </select> 
   <select id="findByName" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select
   	<include refid="Base_Column_List"/>
@@ -276,11 +282,12 @@
   <select id="findById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
   	select
   	<include refid="Base_Column_List" />
-  	from tb_user where user_id = #{user_id}
+  	from tb_user where user_id = #{userId}
   </select>
   <select id="findBySupplier" parameterType="java.lang.Integer" resultMap="BaseResultMap">
   	select distinct t1.user_id, t1.user_name, t1.pass_word, t1.phone, t1.avatar, t1.sex, t1.nick_name, t1.address
-  	from tb_user t1 inner join tb_order t2 on t1.user_id = t2.buyer inner join tb_good t3 on t3.good_id = t2.good_id
+	from tb_user t1 inner join tb_order t2 on t1.user_id = t2.buyer inner join tb_good t3 on t3.good_id = t2.good_id
+	inner join (select good_id, max(buy_price) max_price from tb_order group by good_id) t4 on t4.good_id = t2.good_id and t4.max_price = t2.buy_price
 	where t3.supplier = #{supplier}
   </select>
 </mapper>

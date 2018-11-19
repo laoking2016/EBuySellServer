@@ -28,8 +28,18 @@ public class User {
     private Integer referee;
     
     private String role;
+    
+    private String openId;
 
-    public String getRole() {
+    public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+
+	public String getRole() {
 		return role;
 	}
 
