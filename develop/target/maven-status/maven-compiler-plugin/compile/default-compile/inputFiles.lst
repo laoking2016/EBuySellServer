@@ -10,6 +10,7 @@ D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\config
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\config\WxMappingJackson2HttpMessageConverter.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\service\impl\AddressServiceImpl.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\authorization\model\TokenModel.java
+D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\Favorite.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\config\SwaggerConfig.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\service\impl\CartServiceImpl.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\CartExample.java
@@ -21,6 +22,7 @@ D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\contro
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\CartDetail.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\model\ResultModel.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\authorization\annotation\Authorization.java
+D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\mapper\FavoriteMapper.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\service\impl\UserServiceImpl.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\OrderDetail.java
 D:\my\auction\eBuySell\eBuySellServer\develop\src\main\java\com\greyu\ysj\service\CategoryFirstService.java

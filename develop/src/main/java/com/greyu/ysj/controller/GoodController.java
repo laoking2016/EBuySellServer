@@ -4,9 +4,11 @@ import com.github.pagehelper.PageInfo;
 import com.greyu.ysj.authorization.annotation.Authorization;
 import com.greyu.ysj.config.Constants;
 import com.greyu.ysj.config.ResultStatus;
+import com.greyu.ysj.entity.Favorite;
 import com.greyu.ysj.entity.Good;
 import com.greyu.ysj.entity.Order;
 import com.greyu.ysj.entity.Question;
+import com.greyu.ysj.mapper.FavoriteMapper;
 import com.greyu.ysj.mapper.GoodMapper;
 import com.greyu.ysj.mapper.OrderMapper;
 import com.greyu.ysj.mapper.QuestionMapper;
@@ -248,6 +250,9 @@ public class GoodController {
     @Autowired
     private QuestionMapper questionMapper;
     
+    @Autowired
+    private FavoriteMapper favoriteMapper;
+    
     @RequestMapping(value = "/user/v2/goods", method = RequestMethod.GET)
     //@Authorization
     public ResponseEntity<ResultModel> findByType(@RequestParam("type") String type){
@@ -434,4 +439,69 @@ public class GoodController {
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     }
+    
+    @RequestMapping(value = "/user/v2/good/{goodId}/favorite", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> getFavorite(@PathVariable Integer goodId, HttpServletRequest request){
+    	
+    	int currentUserId = -1;
+    	
+    	if(request.getAttribute(Constants.CURRENT_USER_ID) != null) {
+    		currentUserId = (int)request.getAttribute(Constants.CURRENT_USER_ID);
+    	}
+    	
+    	Favorite favorite = this.favoriteMapper.findFavorite(goodId, currentUserId);
+    	
+    	Boolean flag = false;
+    	
+    	if(favorite != null) {
+    		flag = favorite.getFlag();
+    	}
+    	
+    	return new ResponseEntity<ResultModel>(ResultModel.ok(flag), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/user/v2/good/{goodId}/favorite", method = RequestMethod.POST)
+    public ResponseEntity<ResultModel> updatefavorite(@PathVariable Integer goodId, HttpServletRequest request){
+    	
+		int currentUserId = -1;
+		    	
+    	if(request.getAttribute(Constants.CURRENT_USER_ID) != null) {
+    		currentUserId = (int)request.getAttribute(Constants.CURRENT_USER_ID);
+    	}
+    	
+    	Favorite favorite = this.favoriteMapper.findFavorite(goodId, currentUserId);
+    	
+    	if(favorite == null) {
+    		favorite = new Favorite();
+    		favorite.setGoodId(goodId);
+    		favorite.setUserId(currentUserId);
+    		favorite.setFlag(true);
+    		this.favoriteMapper.insertFavorite(favorite);
+    	}else {
+    		if(favorite.getFlag()) {
+    			favorite.setFlag(false);
+    		}else {
+    			favorite.setFlag(true);
+    		}
+    		this.favoriteMapper.updateFavorite(favorite);
+    	}
+    	
+    	return new ResponseEntity<ResultModel>(ResultModel.ok(favorite.getFlag()), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/user/v2/user/favorited/goods", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> findFavoritedGoods(HttpServletRequest request){	
+    	
+    	int currentUserId = -1;
+    	
+    	if(request.getAttribute(Constants.CURRENT_USER_ID) != null) {
+    		currentUserId = (int)request.getAttribute(Constants.CURRENT_USER_ID);
+    	}
+    	
+    	List<Good> goods = this.goodMapper.selectByFavoriteUser(currentUserId);
+    	
+    	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
+    	
+    }
+    
 }

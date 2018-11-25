@@ -1,6 +1,5 @@
 package com.greyu.ysj.mapper;
 
-import com.greyu.ysj.entity.AuctionHistory;
 import com.greyu.ysj.entity.Good;
 import com.greyu.ysj.entity.GoodExample;
 
@@ -59,6 +58,6 @@ public interface GoodMapper {
     Good findById(Integer goodId);
     List<Good> searchByKeyword(@Param("keyword") String keyword);
     List<Good> searchByCategory(@Param("category") Integer category);
-    List<Good> findSupplierGoodsByStatus(@Param("status") String status, @Param("supplier") Integer supplier);
-    
+    List<Good> findSupplierGoodsByStatus(@Param("status") String status, @Param("supplier") Integer supplier); 
+    List<Good> selectByFavoriteUser(Integer userId);
 }

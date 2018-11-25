@@ -47,6 +47,7 @@ com\greyu\ysj\mapper\AdvSwiperMapper.class
 com\greyu\ysj\entity\User.class
 com\greyu\ysj\mapper\CartMapper.class
 com\greyu\ysj\config\MvcConfig.class
+com\greyu\ysj\mapper\FavoriteMapper.class
 com\greyu\ysj\authorization\annotation\Authorization.class
 com\greyu\ysj\mapper\OrderDetailMapper.class
 com\greyu\ysj\storage\StorageException.class
@@ -119,6 +120,7 @@ com\greyu\ysj\authorization\annotation\CurrentUserId.class
 com\greyu\ysj\entity\GoodExample$Criterion.class
 com\greyu\ysj\controller\CategoryFirstController.class
 com\greyu\ysj\mapper\OrderMapper.class
+com\greyu\ysj\entity\Favorite.class
 com\greyu\ysj\entity\OrderExample$GeneratedCriteria.class
 com\greyu\ysj\storage\StorageFileNotFoundException.class
 com\greyu\ysj\service\CategoryFirstService.class

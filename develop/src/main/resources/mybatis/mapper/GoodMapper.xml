@@ -110,6 +110,11 @@
   	<include refid="Base_Column_List"/>
   	from tb_good where type=#{goodType}
   </select>
+  <select id="selectByFavoriteUser" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  	<include refid="Base_Column_List"/>
+  	from tb_good t1 where exists (select id from tb_favorite where good_id = t1.good_id and user_id = #{userId} and flag = true);
+  </select>
   <select id="selectSupplierGoodsByStatus" resultMap="BaseResultMap">
   	select
   	<include refid="Base_Column_List"/>
