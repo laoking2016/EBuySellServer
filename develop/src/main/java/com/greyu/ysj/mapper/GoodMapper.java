@@ -51,9 +51,7 @@ public interface GoodMapper {
     
     /******************************************************************/
     
-    
-    
-    List<Good> findByType(String type);
+    List<Good> findGoods();
     List<Good> findByKeword(String keyword);
     Good findById(Integer goodId);
     List<Good> searchByKeyword(@Param("keyword") String keyword);

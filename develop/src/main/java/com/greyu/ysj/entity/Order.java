@@ -1,7 +1,7 @@
 package com.greyu.ysj.entity;
 
+import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 public class Order {
     
@@ -96,7 +96,7 @@ public class Order {
     
     private Integer goodId;
     
-    private Date buyDate;
+    private Timestamp buyDate;
     
     private Integer buyCount;
     
@@ -126,7 +126,7 @@ public class Order {
     
     private Double topBuyPrice;
     
-    private Date deadline;
+    private Timestamp deadline;
     
     private String description;
     
@@ -138,11 +138,11 @@ public class Order {
 		this.description = description;
 	}
 
-	public Date getDeadline() {
+	public Timestamp getDeadline() {
 		return deadline;
 	}
 
-	public void setDeadline(Date deadline) {
+	public void setDeadline(Timestamp deadline) {
 		this.deadline = deadline;
 	}
 
@@ -221,6 +221,10 @@ public class Order {
 		
 		Date now = new Date();
 		
+		if("精品商城".equals(this.getType())) {
+			return status;
+		}
+		
 		if(this.getDeadline() != null && this.getDeadline().compareTo(now) > 0){
 			return "拍卖中";
 		}
@@ -252,11 +256,11 @@ public class Order {
 		this.goodId = goodId;
 	}
 
-	public Date getBuyDate() {
+	public Timestamp getBuyDate() {
 		return buyDate;
 	}
 
-	public void setBuyDate(Date buyDate) {
+	public void setBuyDate(Timestamp buyDate) {
 		this.buyDate = buyDate;
 	}
 

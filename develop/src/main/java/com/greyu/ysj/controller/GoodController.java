@@ -1,5 +1,21 @@
 package com.greyu.ysj.controller;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.github.pagehelper.PageInfo;
 import com.greyu.ysj.authorization.annotation.Authorization;
 import com.greyu.ysj.config.Constants;
@@ -15,18 +31,6 @@ import com.greyu.ysj.mapper.QuestionMapper;
 import com.greyu.ysj.model.GoodModel;
 import com.greyu.ysj.model.ResultModel;
 import com.greyu.ysj.service.GoodService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @Description:
@@ -255,10 +259,10 @@ public class GoodController {
     
     @RequestMapping(value = "/user/v2/goods", method = RequestMethod.GET)
     //@Authorization
-    public ResponseEntity<ResultModel> findByType(@RequestParam("type") String type){
+    public ResponseEntity<ResultModel> findGoods(){
     	
     	List<Good> goods = 
-    			this.goodMapper.findByType(type);
+    			this.goodMapper.findGoods();
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     	
@@ -348,19 +352,25 @@ public class GoodController {
     	order.setStatus("待支付");
     	order.setType(type);
     	order.setBuyer(currentUserId);
-    	order.setBuyDate(now);
+    	order.setBuyDate(new Timestamp(now.getTime()));
     	
-    	Order searchedOrder = 
-    			this.orderMapper.findByGoodIdAndBuyer(goodId, currentUserId);
-    	
-    	if(searchedOrder == null) {
-    		this.orderMapper.insert(order);
+    	if("拍卖".equals(order.getType())) {
+    		Order searchedOrder = 
+        			this.orderMapper.findByGoodIdAndBuyer(goodId, currentUserId);
+        	
+        	if(searchedOrder == null) {
+        		this.orderMapper.insert(order);
+        	}else {
+        		searchedOrder.setBuyer(currentUserId);
+        		searchedOrder.setBuyDate(new Timestamp(now.getTime()));
+        		searchedOrder.setBuyPrice(order.getBuyPrice());
+        		searchedOrder.setBuyCount(order.getBuyCount());
+        		this.orderMapper.update(searchedOrder);
+        	}
     	}else {
-    		searchedOrder.setBuyer(currentUserId);
-    		searchedOrder.setBuyDate(now);
-    		searchedOrder.setBuyPrice(order.getBuyPrice());
-    		this.orderMapper.update(searchedOrder);
+    		this.orderMapper.insert(order);
     	}
+    	
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok("success"), HttpStatus.OK);
     }

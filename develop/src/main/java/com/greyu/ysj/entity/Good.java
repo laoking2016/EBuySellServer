@@ -1,5 +1,6 @@
 package com.greyu.ysj.entity;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
@@ -13,7 +14,7 @@ public class Good {
 
     private Double originalPrice;
 
-    private Integer inventory;
+    
 
     private Integer soldCount;
 
@@ -85,8 +86,6 @@ public class Good {
 		this.priceCount = priceCount;
 	}
     
-    
-
     public CategorySecond getCategory() {
         return category;
     }
@@ -111,13 +110,7 @@ public class Good {
         this.originalPrice = originalPrice;
     }
 
-    public Integer getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Integer inventory) {
-        this.inventory = inventory;
-    }
+    
 
     public Integer getSoldCount() {
         return soldCount;
@@ -163,6 +156,8 @@ public class Good {
     
     /*****************************************************/
     
+    private Integer inventory;
+    
     private Integer goodId;
 
     private Integer categorySecondId;
@@ -181,7 +176,7 @@ public class Good {
     
     private Double postage;
     
-    private Date deadline;
+    private Timestamp deadline;
     
     private Integer stockCount;
     
@@ -198,7 +193,29 @@ public class Good {
     
     //private Double finalPrice;
     
-    public Order getOrder() {
+    private Double topPrice;
+    
+    private Integer orderId;
+    
+    private String status2;
+    
+    public String getStatus2() {
+		return status2;
+	}
+
+	public void setStatus2(String status2) {
+		this.status2 = status2;
+	}
+
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
+	public Order getOrder() {
     	
     	if(orders == null) {
     		return null;
@@ -344,15 +361,19 @@ public class Good {
         this.goodName = goodName;
     }
     
-    public Date getDeadline() {
+    public Timestamp getDeadline() {
     	return deadline;
     }
     
-    public void setDeadline(Date deadline) {
+    public void setDeadline(Timestamp deadline) {
     	this.deadline = deadline;
     }
     
     public Double getCurrentBid() {
+    	
+    	if(this.orders == null) {
+    		return 0.0;
+    	}
     	
     	int size = orders.size();
     	
@@ -408,6 +429,37 @@ public class Good {
     	}else {
     		return price;
     	}
+    }
+    
+    public Double getTopPrice() {
+    	
+    	if(this.topPrice == null) {
+    		return this.price;
+    	}
+    	
+    	return topPrice;
+    }
+    
+    public void setTopPrice(Double topPrice) {
+    	this.topPrice = topPrice;
+    }
+    
+    public Integer getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Integer inventory) {
+        this.inventory = inventory;
+    }
+    
+    private Integer buyer;
+    
+    public Integer getBuyer() {
+    	return this.buyer;
+    }
+    
+    public void setBuyer(Integer buyer) {
+    	this.buyer = buyer;
     }
     
     /*public void setFinalPrice(Double finalPrice) {
