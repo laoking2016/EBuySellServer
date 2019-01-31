@@ -534,7 +534,9 @@
       	deadline,
       	status,
       	payment,
-      	publish_date)
+      	publish_date,
+      	next_bid,
+      	agent_bid)
     values (
     	#{goodName,jdbcType=VARCHAR},
     	#{price,jdbcType=DOUBLE},
@@ -548,6 +550,8 @@
 		#{deadline,jdbcType=DATE},
 		#{status,jdbcType=VARCHAR},
 		#{payment,jdbcType=VARCHAR},
-		#{publishDate,jdbcType=DATE})
+		#{publishDate,jdbcType=DATE},
+		#{nextBid, jdbcType=DOUBLE},
+		#{agentBid, jdbcType=DOUBLE})
   </insert>
 </mapper>

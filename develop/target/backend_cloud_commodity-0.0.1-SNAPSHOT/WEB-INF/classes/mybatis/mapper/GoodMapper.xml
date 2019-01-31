@@ -472,7 +472,7 @@
   <select id="findGoods" resultMap="ListResultMap">
   	select t.* from (
   	<include refid="Goods_Query"/>
-  	) t where t.status = '拍卖中' 
+  	) t where t.status = '拍卖中'  order by t.publish_date desc, t.good_name
   </select>
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
   	select
@@ -494,7 +494,7 @@
   <select id="searchByKeyword" resultMap="ListResultMap" >
   	select t.* from (
   	<include refid="Goods_Query"/>
-  	) t where t.status = '拍卖中' and good_name like #{keyword}
+  	) t where t.status = '拍卖中' and good_name like #{keyword} order by t.publish_date desc, t.good_name
   </select>
   <select id="searchByCategory" resultMap="BaseResultMap" >
   	select 
@@ -534,7 +534,9 @@
       	deadline,
       	status,
       	payment,
-      	publish_date)
+      	publish_date,
+      	next_bid,
+      	agent_bid)
     values (
     	#{goodName,jdbcType=VARCHAR},
     	#{price,jdbcType=DOUBLE},
@@ -548,6 +550,8 @@
 		#{deadline,jdbcType=DATE},
 		#{status,jdbcType=VARCHAR},
 		#{payment,jdbcType=VARCHAR},
-		#{publishDate,jdbcType=DATE})
+		#{publishDate,jdbcType=DATE},
+		#{nextBid, jdbcType=DOUBLE},
+		#{agentBid, jdbcType=DOUBLE})
   </insert>
 </mapper>
