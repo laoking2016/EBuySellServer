@@ -27,7 +27,8 @@ public enum ResultStatus {
     CART_NOT_FOUND(-1002, "购物车不存在"),
     USER_NOT_ALLOWED(-1010, "没有操作权限"),
     IMAGE_NOT_EMPTY(-1004, "图片不能为空"),
-    ADV_NOT_FOUND(-1002, "广告不存在");
+    ADV_NOT_FOUND(-1002, "广告不存在"),
+    PRICE_NOT_VALID(-2001, "必须高于目前出价");
 
     /**
      * 返回码

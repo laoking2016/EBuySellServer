@@ -199,7 +199,47 @@ public class Good {
     
     private String status2;
     
-    public String getStatus2() {
+    private Date publishDate;
+    
+    private Double nextBid;
+    
+    private Double agentBid;
+    
+    private Double submitBid;
+    
+    public Double getSubmitBid() {
+		return submitBid;
+	}
+
+	public void setSubmitBid(Double submitBid) {
+		this.submitBid = submitBid;
+	}
+
+	public Double getNextBid() {
+		return nextBid;
+	}
+
+	public void setNextBid(Double nextBid) {
+		this.nextBid = nextBid;
+	}
+
+	public Double getAgentBid() {
+		return agentBid;
+	}
+
+	public void setAgentBid(Double agentBid) {
+		this.agentBid = agentBid;
+	}
+
+	public Date getPublishDate() {
+		return publishDate;
+	}
+
+	public void setPublishDate(Date publishDate) {
+		this.publishDate = publishDate;
+	}
+
+	public String getStatus2() {
 		return status2;
 	}
 
@@ -391,17 +431,7 @@ public class Good {
     	return sortedOrders.get(size - 2).getBuyPrice();
     }
     
-    public Double getNextBid() {
-    	
-    	Double currentBid = getCurrentBid();
-    	
-    	if(currentBid == 0) {
-    		return price;
-    	}
-    	
-    	return (double)Math.round(currentBid * 1.05);
-    	
-    }
+    
     
     public Double getFinalPrice() {
     	Double price = this.price;
@@ -465,4 +495,47 @@ public class Good {
     /*public void setFinalPrice(Double finalPrice) {
     	this.finalPrice = finalPrice;
     }*/
+    
+    public void InitAgentBid() {
+    	if(this.getPrice() == 0) {
+    		this.setNextBid(0d);
+    		this.setAgentBid(5d);
+    	}else {
+    		this.setNextBid(this.getPrice());
+    		this.setAgentBid((double)Math.round(this.getPrice() * 1.05));
+    	}
+    }
+    
+    public void CalcNextBid() {
+    	
+    	List<Order> orders = 
+    			this.getOrders().stream().sorted((f1, f2) -> Double.compare(f1.getBuyPrice(), f2.getBuyPrice())).collect(Collectors.toList());
+    	int size = orders.size();
+    	
+    	if(size == 0) {
+    		this.setNextBid(this.getPrice());
+    		return;
+    	}
+    	
+    	if(orders.size() == 1) {
+    		this.setNextBid(orders.get(size - 1).getBuyPrice());
+    		return;
+    	}
+    	
+    	double first = orders.get(size - 1).getBuyPrice();
+    	double second = orders.get(size - 2).getBuyPrice();
+    	
+    	double inc = Math.round(second * 0.05d);
+    	if(inc < 5d) {
+    		inc = 5d;
+    	}
+    	
+    	double agent = second + inc;
+    	
+    	if(agent > first) {
+    		this.setNextBid(first);
+    	}else {
+    		this.setNextBid(agent);
+    	}
+    }
 }

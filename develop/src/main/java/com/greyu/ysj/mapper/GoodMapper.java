@@ -14,7 +14,7 @@ public interface GoodMapper {
 
     int deleteByPrimaryKey(Integer goodId);
 
-    int insert(Good record);
+    
 
     int insertSelective(Good record);
 
@@ -50,7 +50,8 @@ public interface GoodMapper {
     List<Good> selectByType(@Param("goodType") String goodType);
     
     /******************************************************************/
-    
+    int insert(Good record);
+    int update(Good record);
     List<Good> findGoods();
     List<Good> findByKeword(String keyword);
     Good findById(Integer goodId);

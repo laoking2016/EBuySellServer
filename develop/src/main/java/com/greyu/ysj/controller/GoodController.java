@@ -335,7 +335,7 @@ public class GoodController {
     
     @RequestMapping(value = "/user/v2/good/{goodId}/order", method = RequestMethod.POST)
     @Authorization
-    public ResponseEntity<ResultModel> submitOrder(@RequestParam("type") String type, @PathVariable Integer goodId, @RequestBody Order order, HttpServletRequest request){
+    public synchronized ResponseEntity<ResultModel> submitOrder(@RequestParam("type") String type, @PathVariable Integer goodId, @RequestBody Order order, HttpServletRequest request){
     	
     	int currentUserId = -1;
     	
@@ -356,17 +356,31 @@ public class GoodController {
     	
     	if("拍卖".equals(order.getType())) {
     		Order searchedOrder = 
-        			this.orderMapper.findByGoodIdAndBuyer(goodId, currentUserId);
+    			this.orderMapper.findByGoodIdAndBuyer(goodId, currentUserId);
         	
-        	if(searchedOrder == null) {
-        		this.orderMapper.insert(order);
-        	}else {
-        		searchedOrder.setBuyer(currentUserId);
-        		searchedOrder.setBuyDate(new Timestamp(now.getTime()));
-        		searchedOrder.setBuyPrice(order.getBuyPrice());
-        		searchedOrder.setBuyCount(order.getBuyCount());
-        		this.orderMapper.update(searchedOrder);
-        	}
+    		Good good = this.goodMapper.findById(goodId);
+    		if(good != null) {
+    			if(searchedOrder == null) {
+    				if(order.getBuyPrice() <= good.getNextBid()) {
+    					return new ResponseEntity<ResultModel>(ResultModel.error(ResultStatus.PRICE_NOT_VALID), HttpStatus.BAD_REQUEST);
+    				}
+            		this.orderMapper.insert(order);
+            	}else {
+            		if(order.getBuyPrice() <= good.getNextBid() ||
+        					order.getBuyPrice() <= searchedOrder.getBuyPrice())
+            		{
+            			return new ResponseEntity<ResultModel>(ResultModel.error(ResultStatus.PRICE_NOT_VALID), HttpStatus.BAD_REQUEST);
+            		}
+            		searchedOrder.setBuyer(currentUserId);
+            		searchedOrder.setBuyDate(new Timestamp(now.getTime()));
+            		searchedOrder.setBuyPrice(order.getBuyPrice());
+            		searchedOrder.setBuyCount(order.getBuyCount());
+            		this.orderMapper.update(searchedOrder);
+            	}
+    			good = this.goodMapper.findById(goodId);
+            	good.CalcNextBid();
+        		this.goodMapper.update(good);
+    		}    		
     	}else {
     		this.orderMapper.insert(order);
     	}
@@ -389,11 +403,14 @@ public class GoodController {
     		good.setStockCount(1);
     	}
     	
+    	Date now = new Date();
+    	
     	good.setStatus("拍卖中");
     	
     	good.setType(type);
     	good.setSupplier(currentUserId);
-    	
+    	good.setPublishDate(now);
+    	good.InitAgentBid();
     	this.goodMapper.insert(good);
     	
         return new ResponseEntity<ResultModel>(ResultModel.ok("success"), HttpStatus.OK);

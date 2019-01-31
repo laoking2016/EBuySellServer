@@ -23,6 +23,9 @@
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="stock_count" property="stockCount" jdbcType="INTEGER" />
     <result column="supplier" property="supplier" jdbcType="INTEGER" />
+    <result column="publish_date" property="publishDate" jdbcType="DATE" />
+    <result column="next_bid" property="nextBid" jdbcType="DOUBLE"/>
+    <result column="agent_bid" property="agentBid" jdbcType="DOUBLE"/>
     <collection property="orders" column="good_id" select="findOrdersByGood" />
   </resultMap>
   <resultMap id="OrderResultMap" type="com.greyu.ysj.entity.Order" >
@@ -63,11 +66,14 @@
     <result column="stock_count" property="stockCount" jdbcType="INTEGER" />
     <result column="supplier" property="supplier" jdbcType="INTEGER" />
     <result column="top_price" property="topPrice" jdbcType="INTEGER" />
+    <result column="publish_date" property="publishDate" jdbcType="DATE" />
+    <result column="next_bid" property="nextBid" jdbcType="DOUBLE"/>
+    <result column="agent_bid" property="agentBid" jdbcType="DOUBLE"/>
     <result column="buyer" property="buyer" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
     good_id, category_second_id, good_name, image, price, original_price, inventory, 
-    sold_count, spec, origin, type, images, postage, deadline, description, price_user, price_date, price_count, status, stock_count, supplier
+    sold_count, spec, origin, type, images, postage, deadline, description, price_user, price_date, price_count, status, stock_count, supplier, publish_date, next_bid, agent_bid
   </sql>
   <sql id="Order_Column_List">
   	order_id, status, good_id, buy_date, buy_count, type, buy_price, ship_date, buyer
@@ -75,7 +81,7 @@
   <sql id="Order_Goods_Query">
 	select 
 	t2.order_id order_id, t1.good_id, t1.category_second_id, t1.good_name, t1.image, t1.price, t1.original_price, t1.inventory, 
-	t1.sold_count, t1.spec, t1.origin, t1.type, t1.images, t1.postage, t1.deadline, t1.description, t1.price_user, t1.price_date, t1.price_count, t1.stock_count, t1.supplier, 
+	t1.sold_count, t1.spec, t1.origin, t1.type, t1.images, t1.postage, t1.deadline, t1.description, t1.price_user, t1.price_date, t1.price_count, t1.stock_count, t1.supplier, t1.publish_date, t1.next_bid, t1.agent_bid,
 	
     case when t1.type = '精品商城' then 
 		case when isnull(t2.order_count) then 
@@ -102,8 +108,8 @@
 	union all
 	select 
 		null order_id, t1.good_id, t1.category_second_id, t1.good_name, t1.image, t1.price, t1.original_price, t1.inventory, 
-		t1.sold_count, t1.spec, t1.origin, t1.type, t1.images, t1.postage, t1.deadline, t1.description, t1.price_user, t1.price_date, t1.price_count, t1.stock_count, t1.supplier,
-		'拍卖中' Status2, null top_price,	null buyer
+		t1.sold_count, t1.spec, t1.origin, t1.type, t1.images, t1.postage, t1.deadline, t1.description, t1.price_user, t1.price_date, t1.price_count, t1.stock_count, t1.supplier, t1.publish_date, t1.next_bid, t1.agent_bid,
+		'拍卖中'  Status2, null top_price,	null buyer
 	from tb_good t1 inner join
 	(select good_id, count(order_id) order_count from tb_order where type = '精品商城' group by good_id) t2 
 	on t1.good_id = t2.good_id
@@ -112,7 +118,7 @@
   <sql id="Goods_Query">
 	select distinct
 	t1.good_id, t1.category_second_id, t1.good_name, t1.image, t1.price, t1.original_price, t1.inventory, 
-	t1.sold_count, t1.spec, t1.origin, t1.type, t1.images, t1.postage, t1.deadline, t1.description, t1.price_user, t1.price_date, t1.price_count, t1.stock_count, t1.supplier, 
+	t1.sold_count, t1.spec, t1.origin, t1.type, t1.images, t1.postage, t1.deadline, t1.description, t1.price_user, t1.price_date, t1.price_count, t1.stock_count, t1.supplier, t1.publish_date, t1.next_bid, t1.agent_bid,
 	case when 
 		t1.deadline > CURRENT_TIMESTAMP
 	then '拍卖中' 
@@ -466,7 +472,7 @@
   <select id="findGoods" resultMap="ListResultMap">
   	select t.* from (
   	<include refid="Goods_Query"/>
-  	) t where t.status = '拍卖中' 
+  	) t where t.status = '拍卖中'  order by t.publish_date desc, t.good_name
   </select>
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
   	select
@@ -485,18 +491,35 @@
   	from tb_order t1 inner join tb_user t2 on t1.buyer = t2.user_id  
   	where t1.good_id = #{goodId} order by t1.buy_price desc
   </select>
-  <select id="searchByKeyword" resultMap="BaseResultMap" >
-  	select 
-  	<include refid="Base_Column_List"/>
-  	from tb_good where good_name like #{keyword}
+  <select id="searchByKeyword" resultMap="ListResultMap" >
+  	select t.* from (
+  	<include refid="Goods_Query"/>
+  	) t where t.status = '拍卖中' and good_name like #{keyword} order by t.publish_date desc, t.good_name
   </select>
   <select id="searchByCategory" resultMap="BaseResultMap" >
   	select 
   	<include refid="Base_Column_List"/>
   	from tb_good where category_second_id = #{category}
   </select>
-  <select id="findBy">
-  </select>
+  <update id="update" parameterType="com.greyu.ysj.entity.Good">
+  	update tb_good
+  	set good_name = #{goodName,jdbcType=VARCHAR},
+  		price = #{price,jdbcType=DOUBLE},
+      	type = #{type,jdbcType=VARCHAR}, 
+      	supplier = #{supplier,jdbcType=INTEGER},
+      	images = #{images,jdbcType=VARCHAR},
+      	category_second_id = #{categorySecondId,jdbcType=INTEGER},
+      	postage = #{postage,jdbcType=DOUBLE},
+      	stock_count = #{stockCount,jdbcType=INTEGER},
+      	description = #{description,jdbcType=VARCHAR},
+      	deadline = #{deadline,jdbcType=DATE},
+      	status = #{status,jdbcType=VARCHAR},
+      	payment = #{payment,jdbcType=VARCHAR},
+      	publish_date = #{publishDate,jdbcType=DATE},
+      	next_bid = #{nextBid,jdbcType=DOUBLE},
+      	agent_bid = #{agentBid,jdbcType=DOUBLE}
+      where good_id = #{goodId}
+  </update>
   <insert id="insert" parameterType="com.greyu.ysj.entity.Good" >
     insert into tb_good (
     	good_name,
@@ -510,7 +533,8 @@
       	description,
       	deadline,
       	status,
-      	payment)
+      	payment,
+      	publish_date)
     values (
     	#{goodName,jdbcType=VARCHAR},
     	#{price,jdbcType=DOUBLE},
@@ -523,6 +547,7 @@
 		#{description,jdbcType=VARCHAR},
 		#{deadline,jdbcType=DATE},
 		#{status,jdbcType=VARCHAR},
-		#{payment,jdbcType=VARCHAR})
+		#{payment,jdbcType=VARCHAR},
+		#{publishDate,jdbcType=DATE})
   </insert>
 </mapper>

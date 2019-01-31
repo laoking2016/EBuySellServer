@@ -130,7 +130,27 @@ public class Order {
     
     private String description;
     
-    public String getDescription() {
+    private Double nextBid;
+    
+    private Double postage;
+    
+    public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public Double getNextBid() {
+		return nextBid;
+	}
+
+	public void setNextBid(Double nextBid) {
+		this.nextBid = nextBid;
+	}
+
+	public String getDescription() {
 		return description;
 	}
 
