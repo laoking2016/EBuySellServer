@@ -33,4 +33,5 @@ public interface UserMapper {
     User findById(Integer userId);
     List<User> findBySupplier(Integer supplier);
     User findByName(String name);
+    List<User> findAll();
 }

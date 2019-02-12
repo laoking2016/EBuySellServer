@@ -70,6 +70,7 @@
     <result column="next_bid" property="nextBid" jdbcType="DOUBLE"/>
     <result column="agent_bid" property="agentBid" jdbcType="DOUBLE"/>
     <result column="buyer" property="buyer" jdbcType="INTEGER"/>
+    <result column="category_first_id" property="categoryFirstId" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
     good_id, category_second_id, good_name, image, price, original_price, inventory, 
@@ -128,10 +129,12 @@
 			t2.status
 		end 
 	end status,
-	t2.top_price
+	t2.top_price,
+	t3.category_first_id
 	from tb_good t1 left join 
 	(select t1.*, t2.buy_price top_price, t2.order_count from tb_order t1 inner join (select good_id, count(order_id) order_count, max(buy_price) buy_price from tb_order group by good_id) t2 on t1.good_id = t2.good_id and t1.buy_price = t2.buy_price) t2 
 	on t1.good_id = t2.good_id 
+	left join tb_category_second t3 on t1.category_second_id = t3.category_second_id
   </sql>
   
   <sql id="Example_Where_Clause" >

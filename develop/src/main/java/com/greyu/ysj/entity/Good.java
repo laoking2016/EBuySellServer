@@ -1,7 +1,6 @@
 package com.greyu.ysj.entity;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -161,8 +160,10 @@ public class Good {
     private Integer goodId;
 
     private Integer categorySecondId;
+    
+    private Integer categoryFirstId;
 
-    private String goodName;
+	private String goodName;
     
     private Double price;
     
@@ -336,6 +337,14 @@ public class Good {
     public void setCategorySecondId(Integer categorySecondId) {
         this.categorySecondId = categorySecondId;
     }
+    
+    public Integer getCategoryFirstId() {
+		return categoryFirstId;
+	}
+
+	public void setCategoryFirstId(Integer categoryFirstId) {
+		this.categoryFirstId = categoryFirstId;
+	}
     
     public String getImages() {
     	return images;
@@ -525,9 +534,14 @@ public class Good {
     	double first = orders.get(size - 1).getBuyPrice();
     	double second = orders.get(size - 2).getBuyPrice();
     	
-    	double inc = Math.round(second * 0.05d);
-    	if(inc < 5d) {
+    	double inc = 0;
+    	
+    	if(second < 100) {
     		inc = 5d;
+    	}else if(second >= 100 && second < 1000) {
+    		inc = 10d;
+    	}else {
+    		inc = 20d;
     	}
     	
     	double agent = second + inc;

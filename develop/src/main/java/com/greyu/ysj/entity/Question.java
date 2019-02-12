@@ -12,6 +12,21 @@ public class Question {
 	private Integer answerUser;
 	private Date questionDate;
 	private Date answerDate;
+	private String nickName;
+	private String avatar;
+	
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 	public Integer getId() {
 		return id;
 	}

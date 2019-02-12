@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -335,6 +336,7 @@ public class GoodController {
     
     @RequestMapping(value = "/user/v2/good/{goodId}/order", method = RequestMethod.POST)
     @Authorization
+    @Transactional
     public synchronized ResponseEntity<ResultModel> submitOrder(@RequestParam("type") String type, @PathVariable Integer goodId, @RequestBody Order order, HttpServletRequest request){
     	
     	int currentUserId = -1;

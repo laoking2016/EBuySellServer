@@ -10,25 +10,28 @@
     <result column="answer_user" property="answerUser" jdbcType="INTEGER" />
     <result column="question_date" property="questionDate" jdbcType="DATE" />
     <result column="answer_date" property="answerDate" jdbcType="DATE" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, question, answer, good_id, question_user, answer_user, question_date, answer_date
+    t1.id, t1.question, t1.answer, t1.good_id, t1.question_user, t1.answer_user, t1.question_date, t1.answer_date,
+    t2.nick_name, t2.avatar
   </sql>
   
   <select id="selectByGoodId" resultMap="BaseResultMap">
   	select 
   	<include refid="Base_Column_List" />
-  	from tb_question
+  	from tb_question t1 inner join tb_user t2 on t1.question_user = t2.user_id
   	where good_id = #{goodId}
-  	order by question_date desc, answer_date desc
+  	order by t1.question_date desc, t1.answer_date desc
   </select>
   <!-- ************************************************ -->
   <select id="findByGoodId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
   	select
   	<include refid="Base_Column_List"/>
-  	from tb_question
+  	from tb_question t1 inner join tb_user t2 on t1.question_user = t2.user_id
   	where good_id = #{goodId}
-  	order by question_date desc, answer_date desc
+  	order by t1.question_date desc, t1.answer_date desc
   </select>
   <insert id="insert" parameterType="com.greyu.ysj.entity.Question">
   	insert into tb_question (

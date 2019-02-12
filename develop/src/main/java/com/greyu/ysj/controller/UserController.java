@@ -37,7 +37,7 @@ public class UserController {
     @RequestMapping(value = "/admin/v1/user", method = RequestMethod.GET)
     @Authorization
     public ResponseEntity<ResultModel> getUsers(Integer page, Integer rows, String orderBy, User user) {
-        System.out.println(user);
+
         List<User> users = this.userService.getAllUsers(page, rows, user);
         return new ResponseEntity<>(ResultModel.ok(users), HttpStatus.OK);
     }
@@ -136,6 +136,22 @@ public class UserController {
         return new ResponseEntity<>(ResultModel.ok(model), HttpStatus.OK);
     }
     
+    @RequestMapping(value= "/user/v2/wechat/user", method = RequestMethod.POST)
+    public ResponseEntity<ResultModel> addWechatUser(@RequestBody User user) {
+    	
+    	User userDb = this.userMapper.findByOpenId(user.getOpenId());
+    	
+    	if(userDb == null) {
+    		this.userMapper.insert(user);
+    		user = this.userMapper.findByOpenId(user.getOpenId());
+    	}else {
+    		user = userDb;
+    	}
+    	        
+        TokenModel model = this.tokenManager.createToken(user.getUserId());
+        model.setRole(user.getRole());
+        return new ResponseEntity<>(ResultModel.ok(model), HttpStatus.CREATED);
+    }
     
     @RequestMapping(value= "/user/v2/user", method = RequestMethod.POST)
     public ResponseEntity<ResultModel> addUser(@RequestBody User user) {
@@ -180,4 +196,11 @@ public class UserController {
     	return new ResponseEntity<ResultModel>(ResultModel.ok(users), HttpStatus.OK);
     }
     
+    @RequestMapping(value = "/user/v2/users", method = RequestMethod.GET)
+    @Authorization
+    public ResponseEntity<ResultModel> findAll(HttpServletRequest request) {
+
+    	List<User> users = userMapper.findAll();
+    	return new ResponseEntity<ResultModel>(ResultModel.ok(users), HttpStatus.OK);
+    }
 }

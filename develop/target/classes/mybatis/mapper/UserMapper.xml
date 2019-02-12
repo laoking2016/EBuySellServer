@@ -290,4 +290,7 @@
 	inner join (select good_id, max(buy_price) max_price from tb_order group by good_id) t4 on t4.good_id = t2.good_id and t4.max_price = t2.buy_price
 	where t3.supplier = #{supplier}
   </select>
+  <select id="findAll" resultMap="BaseResultMap">
+  	select * from tb_user order by nick_name
+  </select>
 </mapper>

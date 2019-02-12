@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.greyu.ysj.mapper.MessageMapper" >
+  <resultMap id="BaseResultMap" type="com.greyu.ysj.entity.Message" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sender" property="sender" jdbcType="INTEGER" />
+    <result column="receiver" property="receiver" jdbcType="INTEGER" />
+    <result column="message_time" property="messageTime" jdbcType="DATE" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+    <result column="read_flag" property="readFlag" jdbcType="BIT"/>
+    <result column="reply_id" property="replyId" jdbcType="INTEGER" />
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR"/>
+    <result column="sender_name" property="senderName" jdbcType="VARCHAR"/> 
+    <result column="reply_flag" property="replyFlag" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  		t1.*, t2.nick_name receiver_name, t3.nick_name sender_name
+  	from tb_message t1 inner join tb_user t2 on t1.receiver = t2.user_id
+	  	inner join tb_user t3 on t1.sender = t3.user_id
+	  	where t1.id = #{id}
+  </select>
+  <select id="findByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  		t1.*, t2.nick_name receiver_name, t3.nick_name sender_name
+  	from tb_message t1 inner join tb_user t2 on t1.receiver = t2.user_id
+	  	inner join tb_user t3 on t1.sender = t3.user_id
+	  	where t1.receiver = #{userId} or t1.sender = #{userId}
+  	order by t1.message_time desc
+  </select>
+  <insert id="insert" parameterType="com.greyu.ysj.entity.Message">
+  	insert into tb_message
+		(sender,
+		receiver,
+		message_time,
+		title,
+		message,
+		read_flag,
+		reply_id,
+		reply_flag)
+		values
+		(#{sender},
+		#{receiver},
+		#{messageTime},
+		#{title},
+		#{message},
+		#{readFlag},
+		#{replyId},
+		#{replyFlag})
+  </insert> 
+  <update id="update" parameterType="com.greyu.ysj.entity.Message">
+  	update tb_message
+	set
+		sender = #{sender},
+		receiver = #{receiver},
+		message_time = #{messageTime},
+		message = #{message},
+		title = #{title},
+		read_flag = #{readFlag},
+		reply_id = #{replyId},
+		reply_flag = #{replyFlag}
+	where id = #{id}
+  </update>
+</mapper>
