@@ -34,4 +34,5 @@ public interface UserMapper {
     List<User> findBySupplier(Integer supplier);
     User findByName(String name);
     List<User> findAll();
+    void update(User record);
 }

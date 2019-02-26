@@ -15,6 +15,7 @@ public interface GoodMapper {
     int deleteByPrimaryKey(Integer goodId);
 
     
+    
 
     int insertSelective(Good record);
 
@@ -53,10 +54,12 @@ public interface GoodMapper {
     int insert(Good record);
     int update(Good record);
     List<Good> findGoods();
+    List<Good> findGoodsPaged(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
     List<Good> findByKeword(String keyword);
     Good findById(Integer goodId);
     List<Good> searchByKeyword(@Param("keyword") String keyword);
     List<Good> searchByCategory(@Param("category") Integer category);
+    List<Good> findSupplierGoods(@Param("supplier") Integer supplier);
     List<Good> findSupplierGoodsByStatus(@Param("status") String status, @Param("supplier") Integer supplier); 
     List<Good> selectByFavoriteUser(Integer userId);
 }

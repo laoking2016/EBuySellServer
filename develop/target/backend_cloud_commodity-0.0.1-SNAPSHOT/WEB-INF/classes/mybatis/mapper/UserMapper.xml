@@ -12,6 +12,7 @@
     <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="role" property="role" jdbcType="VARCHAR"/>
     <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+    <result column="birth" property="birth" jdbcType="DATE"/>
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -261,7 +262,7 @@
   
   <!-- **************************************************** -->
   <sql id="Base_Column_List" >
-    user_id, user_name, pass_word, phone, avatar, sex, nick_name, address, role, open_id
+    user_id, user_name, pass_word, phone, avatar, sex, nick_name, address, role, open_id, email, birth
   </sql>
   <insert id="insert" parameterType="com.greyu.ysj.entity.User" >
     insert into tb_user (user_name, pass_word, phone, sex, avatar, nick_name, birth, email, address, referee, role, open_id)
@@ -290,4 +291,23 @@
 	inner join (select good_id, max(buy_price) max_price from tb_order group by good_id) t4 on t4.good_id = t2.good_id and t4.max_price = t2.buy_price
 	where t3.supplier = #{supplier}
   </select>
+  <select id="findAll" resultMap="BaseResultMap">
+  	select * from tb_user order by nick_name
+  </select>
+  <update id="update" parameterType="com.greyu.ysj.entity.User">
+  	update tb_user
+    set user_name = #{userName},
+      pass_word = #{passWord},
+      phone = #{phone},
+      avatar = #{avatar},
+      sex = #{sex},
+      nick_name = #{nickName},
+      birth = #{birth},
+      email = #{email},
+      address = #{address},
+      referee = #{referee},
+      role = #{role},
+      open_id = #{openId}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
 </mapper>

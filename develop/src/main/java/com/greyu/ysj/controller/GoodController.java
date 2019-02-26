@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.greyu.ysj.authorization.annotation.Authorization;
 import com.greyu.ysj.config.Constants;
@@ -260,10 +261,11 @@ public class GoodController {
     
     @RequestMapping(value = "/user/v2/goods", method = RequestMethod.GET)
     //@Authorization
-    public ResponseEntity<ResultModel> findGoods(){
+    public ResponseEntity<ResultModel> findGoods(@RequestParam("page") Integer page){
     	
+    	int offset = (page - 1) * Constants.PAGE_SIZE;
     	List<Good> goods = 
-    			this.goodMapper.findGoods();
+    			this.goodMapper.findGoodsPaged(offset, Constants.PAGE_SIZE);
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     	
@@ -413,22 +415,54 @@ public class GoodController {
     	good.setSupplier(currentUserId);
     	good.setPublishDate(now);
     	good.InitAgentBid();
+    	good.setCancelFlag(false);
     	this.goodMapper.insert(good);
     	
         return new ResponseEntity<ResultModel>(ResultModel.ok("success"), HttpStatus.OK);
     }
     
+    @RequestMapping(value = "/user/v2/good/{goodId}", method = RequestMethod.PATCH)
+    @Authorization
+    public ResponseEntity<ResultModel> updateGood(
+    		@PathVariable("goodId") Integer goodId, 
+    		@RequestParam("cancelFlag") Boolean cancelFlag, 
+    		HttpServletRequest request){
+    	
+    	int currentUserId = -1;
+        
+        if(request.getAttribute(Constants.CURRENT_USER_ID) != null) {
+        	currentUserId = (int)request.getAttribute(Constants.CURRENT_USER_ID);
+        }
+        
+        Good record = this.goodMapper.findById(goodId);
+        
+        if(record != null) {
+        	record.setCancelFlag(cancelFlag);
+        	this.goodMapper.update(record);
+        }
+    	
+        return new ResponseEntity<ResultModel>(ResultModel.ok("success"), HttpStatus.OK);
+    } 
+    
     @RequestMapping(value = "/user/v2/supplier/goods", method = RequestMethod.GET)
     @Authorization
-    public ResponseEntity<ResultModel> findSupplierGoodsByStatus(@RequestParam("status") String status, HttpServletRequest request){
+    public ResponseEntity<ResultModel> findSupplierGoods(HttpServletRequest request){
     	int currentUserId = -1;
     	
     	if(request.getAttribute(Constants.CURRENT_USER_ID) != null) {
     		currentUserId = (int)request.getAttribute(Constants.CURRENT_USER_ID);
     	}
     	
-    	List<Good> goods = this.goodMapper.findSupplierGoodsByStatus(status, currentUserId);
+    	List<Good> goods = this.goodMapper.findSupplierGoods(currentUserId);
+    	    	
+    	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/user/v2/supplier/goods/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> findSupplierGoods(@PathVariable("userId") Integer userId, HttpServletRequest request){
     	
+    	
+    	List<Good> goods = this.goodMapper.findSupplierGoodsByStatus("拍卖中", userId);
    	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     }

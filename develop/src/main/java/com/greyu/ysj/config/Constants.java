@@ -63,4 +63,6 @@ public class Constants {
      * 订单退款失败
      */
     public static final int ORDER_REFUNDING_FAILURE = -2;
+    
+    public static final int PAGE_SIZE = 5;
 }

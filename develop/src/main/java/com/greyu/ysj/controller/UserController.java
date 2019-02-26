@@ -3,7 +3,6 @@ package com.greyu.ysj.controller;
 import com.greyu.ysj.authorization.annotation.Authorization;
 import com.greyu.ysj.authorization.manager.TokenManager;
 import com.greyu.ysj.authorization.model.TokenModel;
-import com.greyu.ysj.authorization.model.WechatApiResult;
 import com.greyu.ysj.config.Constants;
 import com.greyu.ysj.config.ResultStatus;
 import com.greyu.ysj.entity.User;
@@ -17,11 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.Request;
-
-import javax.naming.spi.DirStateFactory;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.Response;
 import java.util.List;
 
 /**
@@ -35,7 +30,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/admin/v1/user", method = RequestMethod.GET)
-    @Authorization
+    //@Authorization
     public ResponseEntity<ResultModel> getUsers(Integer page, Integer rows, String orderBy, User user) {
 
         List<User> users = this.userService.getAllUsers(page, rows, user);
@@ -43,10 +38,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/v1/user/{userId}", method = RequestMethod.GET)
-    @Authorization
+    //@Authorization
     public ResponseEntity<ResultModel> getUser(@PathVariable Integer userId) {
         User user = this.userService.selectUserById(userId);
-
+        user.setPassWord(null);
         if (null == user) {
             return new ResponseEntity<ResultModel>(ResultModel.error(ResultStatus.USER_NOT_FOUND), HttpStatus.NOT_FOUND);
         }
@@ -173,6 +168,24 @@ public class UserController {
         return new ResponseEntity<>(ResultModel.ok(model), HttpStatus.CREATED);
     }
     
+    @RequestMapping(value= "/user/v2/user", method = RequestMethod.PUT)
+    public ResponseEntity<ResultModel> updateUser(@RequestBody User user) {
+    	
+    	User userDb = this.userMapper.findById(user.getUserId());
+    	
+    	if(userDb != null) {
+    		userDb.setPhone(user.getPhone());
+    		userDb.setSex(user.getSex());
+    		userDb.setNickName(user.getNickName());
+    		userDb.setBirth(user.getBirth());
+    		userDb.setEmail(user.getEmail());
+    		userDb.setAddress(user.getAddress());
+    		this.userMapper.update(userDb);
+    	}
+        
+    	return new ResponseEntity<ResultModel>(ResultModel.ok("success"), HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "/user/v2/user/{userId}", method = RequestMethod.GET)
     @Authorization
     public ResponseEntity<ResultModel> findById(@PathVariable Integer userId) {
@@ -203,4 +216,6 @@ public class UserController {
     	List<User> users = userMapper.findAll();
     	return new ResponseEntity<ResultModel>(ResultModel.ok(users), HttpStatus.OK);
     }
+    
+    
 }

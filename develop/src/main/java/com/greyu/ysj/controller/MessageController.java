@@ -13,20 +13,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageHelper;
 import com.greyu.ysj.authorization.annotation.Authorization;
 import com.greyu.ysj.config.Constants;
 import com.greyu.ysj.entity.Message;
-import com.greyu.ysj.entity.Question;
 import com.greyu.ysj.mapper.MessageMapper;
 import com.greyu.ysj.model.ResultModel;
+import com.greyu.ysj.service.MessageService;
 
 @RestController
 public class MessageController {
 	
 	@Autowired
 	private MessageMapper messageMapper;
+	
+	@Autowired
+	private MessageService messageService;
 	
 	@RequestMapping(value = "/user/v2/message/{id}", method = RequestMethod.GET)
     @Authorization
@@ -50,7 +55,7 @@ public class MessageController {
 	
 	@RequestMapping(value = "/user/v2/user/messages", method = RequestMethod.GET)
     @Authorization
-	public ResponseEntity<ResultModel> findByUserId(HttpServletRequest request){
+	public ResponseEntity<ResultModel> findByUserId(@RequestParam(value="page", required=false) Integer page, HttpServletRequest request){
 		
 		int currentUserId = -1;
     	
@@ -58,7 +63,14 @@ public class MessageController {
     		currentUserId = (int)request.getAttribute(Constants.CURRENT_USER_ID);
     	}
     	
-    	List<Message> messages = messageMapper.findByUserId(currentUserId);
+    	List<Message> messages = null;
+    			
+    	if(page == null) {
+    		messages = messageMapper.findByUserId(currentUserId);
+    	}else {
+    		int offset = (page - 1) * Constants.PAGE_SIZE;
+    		messages = messageMapper.findByUserIdPaged(currentUserId, offset, Constants.PAGE_SIZE);
+    	}
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(messages), HttpStatus.OK);
 	}

@@ -20,9 +20,9 @@ public class UserServiceImpl implements UserService {
 
     public User selectUserById(int userId) {
         User user = this.userMapper.selectByPrimaryKey(userId);
-        if (null != user.getAvatar() && !user.getAvatar().equals("")) {
+        /*if (null != user.getAvatar() && !user.getAvatar().equals("")) {
             user.setAvatar(Constants.AVATAR_PREFIX_URL + user.getAvatar());
-        }
+        }*/
         return user;
     }
 

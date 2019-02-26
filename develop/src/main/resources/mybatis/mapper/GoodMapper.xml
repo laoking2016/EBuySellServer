@@ -26,6 +26,7 @@
     <result column="publish_date" property="publishDate" jdbcType="DATE" />
     <result column="next_bid" property="nextBid" jdbcType="DOUBLE"/>
     <result column="agent_bid" property="agentBid" jdbcType="DOUBLE"/>
+    <result column="cancel_flag" property="cancelFlag" jdbcType="DOUBLE"/>
     <collection property="orders" column="good_id" select="findOrdersByGood" />
   </resultMap>
   <resultMap id="OrderResultMap" type="com.greyu.ysj.entity.Order" >
@@ -74,7 +75,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     good_id, category_second_id, good_name, image, price, original_price, inventory, 
-    sold_count, spec, origin, type, images, postage, deadline, description, price_user, price_date, price_count, status, stock_count, supplier, publish_date, next_bid, agent_bid
+    sold_count, spec, origin, type, images, postage, deadline, description, price_user, price_date, price_count, status, stock_count, supplier, publish_date, next_bid, agent_bid, cancel_flag
   </sql>
   <sql id="Order_Column_List">
   	order_id, status, good_id, buy_date, buy_count, type, buy_price, ship_date, buyer
@@ -106,6 +107,7 @@
 	from tb_good t1 left join 
 	(select t1.*, t2.buy_price top_price, t2.order_count from tb_order t1 inner join (select good_id, count(order_id) order_count, max(buy_price) buy_price from tb_order group by good_id) t2 on t1.good_id = t2.good_id and t1.buy_price = t2.buy_price) t2 
 	on t1.good_id = t2.good_id
+	where t1.cancel_flag = 0
 	union all
 	select 
 		null order_id, t1.good_id, t1.category_second_id, t1.good_name, t1.image, t1.price, t1.original_price, t1.inventory, 
@@ -114,7 +116,7 @@
 	from tb_good t1 inner join
 	(select good_id, count(order_id) order_count from tb_order where type = '精品商城' group by good_id) t2 
 	on t1.good_id = t2.good_id
-	where t1.type = '精品商城' and t2.order_count <![CDATA[ < ]]> t1.stock_count
+	where t1.type = '精品商城' and t2.order_count <![CDATA[ < ]]> t1.stock_count and t1.cancel_flag = 0
   </sql>
   <sql id="Goods_Query">
 	select distinct
@@ -135,6 +137,7 @@
 	(select t1.*, t2.buy_price top_price, t2.order_count from tb_order t1 inner join (select good_id, count(order_id) order_count, max(buy_price) buy_price from tb_order group by good_id) t2 on t1.good_id = t2.good_id and t1.buy_price = t2.buy_price) t2 
 	on t1.good_id = t2.good_id 
 	left join tb_category_second t3 on t1.category_second_id = t3.category_second_id
+	where t1.cancel_flag = 0
   </sql>
   
   <sql id="Example_Where_Clause" >
@@ -477,17 +480,27 @@
   	<include refid="Goods_Query"/>
   	) t where t.status = '拍卖中'  order by t.publish_date desc, t.good_name
   </select>
+  <select id="findGoodsPaged" resultMap="ListResultMap">
+  	select t.* from (
+  	<include refid="Goods_Query"/>
+  	) t where t.status = '拍卖中'  order by t.publish_date desc, t.good_name
+  	limit #{offset}, #{pageSize}
+  </select>
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
   	select
   	<include refid="Base_Column_List"/>
   	from tb_good where good_id = #{goodId}
   </select>
-  <select id="findSupplierGoodsByStatus" resultMap="ListResultMap">
+  <select id="findSupplierGoods" resultMap="ListResultMap">
   	select t.* from (
   	<include refid="Order_Goods_Query"/>
   	) t where t.supplier = #{supplier}
   </select>
-  
+  <select id="findSupplierGoodsByStatus" resultMap="ListResultMap">
+  	select t.* from (
+  	<include refid="Order_Goods_Query"/>
+  	) t where t.supplier = #{supplier} and t.status2 = #{status}
+  </select>
   <select id="findOrdersByGood" parameterType="java.lang.Integer" resultMap="OrderResultMap">
   	select t1.order_id, t1.status, t1.good_id, t1.buy_date, t1.buy_count, t1.type, t1.buy_price, t1.ship_date, t1.buyer, 
   	t2.nick_name buyer_name, t2.phone phone, t2.address address
@@ -520,7 +533,8 @@
       	payment = #{payment,jdbcType=VARCHAR},
       	publish_date = #{publishDate,jdbcType=DATE},
       	next_bid = #{nextBid,jdbcType=DOUBLE},
-      	agent_bid = #{agentBid,jdbcType=DOUBLE}
+      	agent_bid = #{agentBid,jdbcType=DOUBLE},
+      	cancel_flag = #{cancelFlag,jdbcType=BIT}
       where good_id = #{goodId}
   </update>
   <insert id="insert" parameterType="com.greyu.ysj.entity.Good" >
@@ -539,7 +553,8 @@
       	payment,
       	publish_date,
       	next_bid,
-      	agent_bid)
+      	agent_bid,
+      	cancel_flag)
     values (
     	#{goodName,jdbcType=VARCHAR},
     	#{price,jdbcType=DOUBLE},
@@ -555,6 +570,7 @@
 		#{payment,jdbcType=VARCHAR},
 		#{publishDate,jdbcType=DATE},
 		#{nextBid, jdbcType=DOUBLE},
-		#{agentBid, jdbcType=DOUBLE})
+		#{agentBid, jdbcType=DOUBLE},
+		#{cancelFlag, jdbcType=BIT})
   </insert>
 </mapper>

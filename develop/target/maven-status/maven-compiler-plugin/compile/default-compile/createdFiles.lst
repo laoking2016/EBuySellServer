@@ -10,10 +10,12 @@ com\greyu\ysj\entity\UserExample$Criterion.class
 META-INF\spring-configuration-metadata.json
 com\greyu\ysj\service\AdvService.class
 com\greyu\ysj\entity\AdvSwiper.class
+com\greyu\ysj\mapper\MessageMapper.class
 com\greyu\ysj\entity\CategorySecondExample$Criterion.class
 com\greyu\ysj\entity\OrderDetailExample$Criteria.class
 com\greyu\ysj\entity\AdministratorExample$Criterion.class
 com\greyu\ysj\entity\OrderExample.class
+com\greyu\ysj\service\MessageService.class
 com\greyu\ysj\entity\CategorySecondExample.class
 com\greyu\ysj\entity\AdministratorExample$GeneratedCriteria.class
 com\greyu\ysj\entity\Order.class
@@ -39,6 +41,7 @@ com\greyu\ysj\service\impl\GoodServiceImpl.class
 com\greyu\ysj\config\CrosFilter.class
 com\greyu\ysj\mapper\CategoryFirstMapper.class
 com\greyu\ysj\entity\OrderDetailExample.class
+com\greyu\ysj\entity\Message.class
 com\greyu\ysj\service\CategorySecondService.class
 com\greyu\ysj\config\ResultStatus.class
 com\greyu\ysj\service\GoodService.class
@@ -76,6 +79,7 @@ com\greyu\ysj\service\CartService.class
 com\greyu\ysj\entity\AdvSwiperExample$GeneratedCriteria.class
 com\greyu\ysj\entity\CartDetailExample$Criteria.class
 com\greyu\ysj\service\impl\AdvServiceImpl.class
+com\greyu\ysj\service\impl\MessageServiceImpl.class
 com\greyu\ysj\controller\AdvController.class
 com\greyu\ysj\entity\GoodExample.class
 com\greyu\ysj\entity\CartExample$Criterion.class
@@ -126,5 +130,6 @@ com\greyu\ysj\storage\StorageFileNotFoundException.class
 com\greyu\ysj\service\CategoryFirstService.class
 com\greyu\ysj\service\AddressService.class
 com\greyu\ysj\entity\Good.class
+com\greyu\ysj\controller\MessageController.class
 com\greyu\ysj\mapper\CategorySecondMapper.class
 com\greyu\ysj\entity\AddressExample.class

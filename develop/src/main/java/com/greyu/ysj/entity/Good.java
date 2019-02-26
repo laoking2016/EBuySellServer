@@ -208,7 +208,17 @@ public class Good {
     
     private Double submitBid;
     
-    public Double getSubmitBid() {
+    private Boolean cancelFlag;
+    
+    public Boolean getCancelFlag() {
+		return cancelFlag;
+	}
+
+	public void setCancelFlag(Boolean cancelFlag) {
+		this.cancelFlag = cancelFlag;
+	}
+
+	public Double getSubmitBid() {
 		return submitBid;
 	}
 
