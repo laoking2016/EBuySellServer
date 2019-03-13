@@ -1,5 +1,6 @@
 package com.greyu.ysj.storage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -8,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
@@ -24,16 +27,26 @@ import com.greyu.ysj.utils.FileUtil;
 @Service
 public class FileSystemStorageService implements StorageService {
 
-    private final Path rootLocation;
+    //private final Path rootLocation;
+    
+    private String root;
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
-        this.rootLocation = Paths.get(properties.getLocation());
+        this.root = properties.getLocation();
     }
     
     @Override
     public String store(MultipartFile file) throws IOException, NoSuchAlgorithmException {
     	
+   	
+    	SimpleDateFormat formator = new SimpleDateFormat("yyyyMMdd");
+    	String folder = formator.format(new Date());
+    	
+    	new File(root + "/" + folder).mkdirs();
+    	
+    	Path path = Paths.get(root + "/" + folder);
+    
     	InputStream is =  file.getInputStream();
     	byte[] bytes = FileUtil.toByteArray(is);
     	
@@ -52,10 +65,10 @@ public class FileSystemStorageService implements StorageService {
                         "Cannot store file with relative path outside current directory "
                                 + filename);
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(filename),
+            Files.copy(file.getInputStream(), path.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
             
-            return filename;
+            return folder + "/" + filename;
         }
         catch (IOException e) {
             throw new StorageException("Failed to store file " + filename, e);
@@ -64,20 +77,21 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public Stream<Path> loadAll() {
-        try {
+        /*try {
             return Files.walk(this.rootLocation, 1)
                     .filter(path -> !path.equals(this.rootLocation))
                     .map(path -> this.rootLocation.relativize(path));
         }
         catch (IOException e) {
             throw new StorageException("Failed to read stored files", e);
-        }
-
+        }*/
+    	return null;
     }
 
     @Override
     public Path load(String filename) {
-        return rootLocation.resolve(filename);
+        //return rootLocation.resolve(filename);
+    	return null;
     }
 
     @Override
@@ -101,16 +115,16 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public void deleteAll() {
-        FileSystemUtils.deleteRecursively(rootLocation.toFile());
+        //FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
     @Override
     public void init() {
-        try {
+        /*try {
             Files.createDirectories(rootLocation);
         }
         catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
-        }
+        }*/
     }
 }
