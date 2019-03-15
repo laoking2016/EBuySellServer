@@ -27,4 +27,9 @@ public interface CategoryFirstMapper {
     int updateByPrimaryKeySelective(CategoryFirst record);
 
     int updateByPrimaryKey(CategoryFirst record);
+    
+    /************************************************************/
+    List<CategoryFirst> findAll();
+    
+    List<CategoryFirst> findHasGood();
 }

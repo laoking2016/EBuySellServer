@@ -40,6 +40,7 @@ com\greyu\ysj\entity\CategoryFirstExample$Criterion.class
 com\greyu\ysj\service\impl\GoodServiceImpl.class
 com\greyu\ysj\config\CrosFilter.class
 com\greyu\ysj\mapper\CategoryFirstMapper.class
+com\greyu\ysj\mapper\AdvMapper.class
 com\greyu\ysj\entity\OrderDetailExample.class
 com\greyu\ysj\entity\Message.class
 com\greyu\ysj\service\CategorySecondService.class
@@ -76,6 +77,7 @@ com\greyu\ysj\BackendCloudCommodityApplication.class
 com\greyu\ysj\service\AdministratorService.class
 com\greyu\ysj\entity\Question.class
 com\greyu\ysj\service\CartService.class
+com\greyu\ysj\entity\Adv.class
 com\greyu\ysj\entity\AdvSwiperExample$GeneratedCriteria.class
 com\greyu\ysj\entity\CartDetailExample$Criteria.class
 com\greyu\ysj\service\impl\AdvServiceImpl.class

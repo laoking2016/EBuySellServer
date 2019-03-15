@@ -3,6 +3,7 @@ package com.greyu.ysj.controller;
 import com.greyu.ysj.authorization.annotation.Authorization;
 import com.greyu.ysj.config.ResultStatus;
 import com.greyu.ysj.entity.CategoryFirst;
+import com.greyu.ysj.mapper.CategoryFirstMapper;
 import com.greyu.ysj.model.ResultModel;
 import com.greyu.ysj.service.CategoryFirstService;
 
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -99,5 +101,18 @@ public class CategoryFirstController {
         }
 
         return new ResponseEntity<ResultModel>(resultModel, HttpStatus.OK);
+    }
+    
+    /*****************************************************************/
+    @Autowired
+    private CategoryFirstMapper categoryFirstMapper;
+    
+    @RequestMapping(value = "/user/v2/category/first", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> findHasGood() {
+    	
+    	
+        List<CategoryFirst> list = this.categoryFirstMapper.findHasGood();
+
+        return new ResponseEntity<>(ResultModel.ok(list), HttpStatus.OK);
     }
 }

@@ -260,7 +260,6 @@ public class GoodController {
     private FavoriteMapper favoriteMapper;
     
     @RequestMapping(value = "/user/v2/goods", method = RequestMethod.GET)
-    //@Authorization
     public ResponseEntity<ResultModel> findGoods(@RequestParam("page") Integer page){
     	
     	int offset = (page - 1) * Constants.PAGE_SIZE;
@@ -269,6 +268,16 @@ public class GoodController {
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     	
+    }
+    
+    @RequestMapping(value = "/user/v2/goods/history", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> findHistoryGoods(@RequestParam("page") Integer page){
+    	
+    	int offset = (page - 1) * Constants.PAGE_SIZE;
+    	List<Good> goods = 
+    			this.goodMapper.findHistoryGoodsPaged(offset, Constants.PAGE_SIZE);
+    	
+    	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     }
     
     @RequestMapping(value = "/user/v2/good/{goodId}", method = RequestMethod.GET)

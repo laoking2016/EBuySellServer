@@ -161,4 +161,12 @@
     set category_name = #{categoryName,jdbcType=VARCHAR}
     where category_first_id = #{categoryFirstId,jdbcType=INTEGER}
   </update>
+  
+  <select id="findHasGood" resultMap="BaseResultMap">
+  	select distinct t1.category_first_id, t1.category_name 
+	from tb_category_first t1 
+	inner join tb_category_second t2 on t1.category_first_id = t2.category_first_id
+	inner join tb_good t3 on t2.category_second_id = t3.category_second_id
+	where t3.cancel_flag = 0 and t3.deadline > now() 
+  </select>
 </mapper>

@@ -1,7 +1,9 @@
 package com.greyu.ysj.controller;
 
 import com.greyu.ysj.authorization.annotation.Authorization;
+import com.greyu.ysj.entity.Adv;
 import com.greyu.ysj.entity.AdvSwiper;
+import com.greyu.ysj.mapper.AdvMapper;
 import com.greyu.ysj.model.ResultModel;
 import com.greyu.ysj.service.AdvService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import javax.xml.transform.Result;
 
@@ -80,5 +84,18 @@ public class AdvController {
         } else {
             return new ResponseEntity<ResultModel>(resultModel, HttpStatus.OK);
         }
+    }
+    
+    /***********************************************************************************/
+    
+    @Autowired
+    private AdvMapper advMapper;
+    
+    @RequestMapping(value = "/user/v2/advs", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> findAll(){
+    	
+    	List<Adv> list = advMapper.findAll();
+    	
+    	return new ResponseEntity<ResultModel>(ResultModel.ok(list), HttpStatus.OK);
     }
 }

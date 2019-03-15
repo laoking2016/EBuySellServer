@@ -40,7 +40,7 @@ public class FileSystemStorageService implements StorageService {
     public String store(MultipartFile file) throws IOException, NoSuchAlgorithmException {
     	
    	
-    	SimpleDateFormat formator = new SimpleDateFormat("yyyyMMdd");
+    	SimpleDateFormat formator = new SimpleDateFormat("yyyyMM");
     	String folder = formator.format(new Date());
     	
     	new File(root + "/" + folder).mkdirs();

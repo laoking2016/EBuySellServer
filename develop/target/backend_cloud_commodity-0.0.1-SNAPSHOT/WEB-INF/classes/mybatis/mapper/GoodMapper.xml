@@ -475,6 +475,12 @@
   </update>
   
   <!-- ********************* -->
+  <select id="findHistoryGoodsPaged" resultMap="ListResultMap">
+  select t.* from (
+  <include refid="Goods_Query"/>
+  ) t where t.status = '已完成' order by t.publish_date desc, t.good_name
+  limit #{offset}, #{pageSize}
+  </select>
   <select id="findGoods" resultMap="ListResultMap">
   	select t.* from (
   	<include refid="Goods_Query"/>
@@ -503,7 +509,7 @@
   </select>
   <select id="findOrdersByGood" parameterType="java.lang.Integer" resultMap="OrderResultMap">
   	select t1.order_id, t1.status, t1.good_id, t1.buy_date, t1.buy_count, t1.type, t1.buy_price, t1.ship_date, t1.buyer, 
-  	t2.nick_name buyer_name, t2.phone phone, t2.address address
+  	t2.nick_name buyer_name, t2.phone phone, t2.address address, t2.email email
   	from tb_order t1 inner join tb_user t2 on t1.buyer = t2.user_id  
   	where t1.good_id = #{goodId} order by t1.buy_price desc
   </select>
