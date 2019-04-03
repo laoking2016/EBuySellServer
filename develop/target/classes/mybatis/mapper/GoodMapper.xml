@@ -27,6 +27,7 @@
     <result column="next_bid" property="nextBid" jdbcType="DOUBLE"/>
     <result column="agent_bid" property="agentBid" jdbcType="DOUBLE"/>
     <result column="cancel_flag" property="cancelFlag" jdbcType="DOUBLE"/>
+    <result column="payment" property="payment" jdbcType="VARCHAR"/>
     <collection property="orders" column="good_id" select="findOrdersByGood" />
   </resultMap>
   <resultMap id="OrderResultMap" type="com.greyu.ysj.entity.Order" >
@@ -74,7 +75,7 @@
     <result column="category_first_id" property="categoryFirstId" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    good_id, category_second_id, good_name, image, price, original_price, inventory, 
+    good_id, category_second_id, good_name, image, price, original_price, inventory, payment,
     sold_count, spec, origin, type, images, postage, deadline, description, price_user, price_date, price_count, status, stock_count, supplier, publish_date, next_bid, agent_bid, cancel_flag
   </sql>
   <sql id="Order_Column_List">
