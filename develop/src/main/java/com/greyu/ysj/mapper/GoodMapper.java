@@ -53,7 +53,7 @@ public interface GoodMapper {
     /******************************************************************/
     int insert(Good record);
     int update(Good record);
-    List<Good> findHistoryGoodsPaged(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+    List<Good> findHistoryGoodsPaged(@Param("q") String q, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
     List<Good> findGoods();
     List<Good> findGoodsPaged(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
     List<Good> findByKeword(String keyword);

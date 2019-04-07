@@ -479,7 +479,7 @@
   <select id="findHistoryGoodsPaged" resultMap="ListResultMap">
   select t.* from (
   <include refid="Goods_Query"/>
-  ) t where t.status = '已完成' order by t.publish_date desc, t.good_name
+  ) t where t.status = '已完成' and good_name like #{q} order by t.publish_date desc, t.good_name
   limit #{offset}, #{pageSize}
   </select>
   <select id="findGoods" resultMap="ListResultMap">

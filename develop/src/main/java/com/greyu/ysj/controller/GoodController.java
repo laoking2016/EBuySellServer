@@ -271,11 +271,11 @@ public class GoodController {
     }
     
     @RequestMapping(value = "/user/v2/goods/history", method = RequestMethod.GET)
-    public ResponseEntity<ResultModel> findHistoryGoods(@RequestParam("page") Integer page){
+    public ResponseEntity<ResultModel> findHistoryGoods(@RequestParam("q") String q, @RequestParam("page") Integer page){
     	
     	int offset = (page - 1) * Constants.PAGE_SIZE;
     	List<Good> goods = 
-    			this.goodMapper.findHistoryGoodsPaged(offset, Constants.PAGE_SIZE);
+    			this.goodMapper.findHistoryGoodsPaged("%" + q + "%", offset, Constants.PAGE_SIZE);
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     }
