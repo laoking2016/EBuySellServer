@@ -2,8 +2,8 @@ package com.greyu.ysj.controller;
 
 import com.greyu.ysj.authorization.annotation.Authorization;
 import com.greyu.ysj.config.ResultStatus;
-import com.greyu.ysj.entity.CategoryFirst;
 import com.greyu.ysj.entity.CategorySecond;
+import com.greyu.ysj.mapper.CategorySecondMapper;
 import com.greyu.ysj.model.ResultModel;
 import com.greyu.ysj.service.CategorySecondService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +40,20 @@ public class CategorySecondController {
         return new ResponseEntity<>(ResultModel.ok(categoryList), HttpStatus.OK);
     }
     
+    @Autowired
+    private CategorySecondMapper categorySecondMapper;
+    
     @RequestMapping(value = "/user/v1/category/first/child/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<ResultModel> getByCategoryFirstId(@PathVariable Integer categoryId){
-    	List<CategorySecond> categoryList = this.categorySecondService.getByCategoryFirstId(categoryId);
+    	
+    	
+    	List<CategorySecond> categoryList = null; 
+    	
+    	if(categoryId == -1) {
+    		categoryList = categorySecondMapper.selectAll();
+    	} else {
+    		categoryList = this.categorySecondService.getByCategoryFirstId(categoryId);
+    	}
     	
     	return new ResponseEntity<>(ResultModel.ok(categoryList), HttpStatus.OK);
     }

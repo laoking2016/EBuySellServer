@@ -27,4 +27,6 @@ public interface CategorySecondMapper {
     int updateByPrimaryKeySelective(CategorySecond record);
 
     int updateByPrimaryKey(CategorySecond record);
+    
+    List<CategorySecond> selectAll();
 }
