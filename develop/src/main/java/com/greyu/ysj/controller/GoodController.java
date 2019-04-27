@@ -259,12 +259,36 @@ public class GoodController {
     @Autowired
     private FavoriteMapper favoriteMapper;
     
-    @RequestMapping(value = "/user/v2/goods", method = RequestMethod.GET)
-    public ResponseEntity<ResultModel> findGoods(@RequestParam("page") Integer page){
+    @RequestMapping(value = "/user/v2/category/goods", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> findCategoryGoods(@RequestParam("first") Integer first, @RequestParam("second") Integer second, @RequestParam("page") Integer page){
+    	int pageSize = 10;
     	
-    	int offset = (page - 1) * Constants.PAGE_SIZE;
+    	int offset = (page = 1) * pageSize;
+    	
+    	List<Good> goods = null;
+    	
+    	if(first == -1 && second == -1) {
+    		goods = goodMapper.findGoodsPagedByCategory(offset, page);
+    	}else {
+    		if(first != -1) {
+    			goods = goodMapper.findGoodsPagedByCategoryFirst(first, offset, page);
+    		}
+    		if(second != -1) {
+    			goods = goodMapper.findGoodsPagedByCategorySecond(second, offset, page);
+    		}
+    	}
+    	
+    	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/user/v2/goods", method = RequestMethod.GET)
+    public ResponseEntity<ResultModel> findGoods(@RequestParam("type") String type, @RequestParam("page") Integer page, @RequestParam("sort") String sort){
+    	
+    	int pageSize = 10;
+    	
+    	int offset = (page - 1) * pageSize;
     	List<Good> goods = 
-    			this.goodMapper.findGoodsPaged(offset, Constants.PAGE_SIZE);
+    			this.goodMapper.findGoodsPagedByType(type, sort, offset, pageSize);
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     	

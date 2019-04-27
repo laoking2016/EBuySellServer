@@ -56,6 +56,10 @@ public interface GoodMapper {
     List<Good> findHistoryGoodsPaged(@Param("q") String q, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
     List<Good> findGoods();
     List<Good> findGoodsPaged(@Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+    List<Good> findGoodsPagedByType(@Param("type") String type, @Param("sort") String sort, @Param("offset") Integer offset, @Param("pageSize") Integer pageSize);
+    List<Good> findGoodsPagedByCategory(@Param("offset") Integer offset, @Param("page") Integer page);
+    List<Good> findGoodsPagedByCategoryFirst(@Param("categoryFirstId") Integer categoryFirstId, @Param("offset") Integer offset, @Param("page") Integer page);
+    List<Good> findGoodsPagedByCategorySecond(@Param("categorySecondId") Integer categorySecondId, @Param("offset") Integer offset, @Param("page") Integer page);
     List<Good> findByKeword(String keyword);
     Good findById(Integer goodId);
     List<Good> searchByKeyword(@Param("keyword") String keyword);

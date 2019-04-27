@@ -493,6 +493,12 @@
   	) t where t.status = '拍卖中'  order by t.publish_date desc, t.good_name
   	limit #{offset}, #{pageSize}
   </select>
+  <select id="findGoodsPagedByType" resultMap="ListResultMap">
+  	select t.* from (
+  	<include refid="Goods_Query"/>
+  	) t where t.status = '拍卖中' and t.type=#{type} order by t.publish_date desc, t.good_name
+  	limit #{offset}, #{pageSize}
+  </select>
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
   	select
   	<include refid="Base_Column_List"/>
