@@ -6,6 +6,7 @@ D:\wwz\acc\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\
 D:\wwz\acc\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\mapper\CategoryFirstMapper.java
 D:\wwz\acc\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\service\UserService.java
 D:\wwz\acc\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\GoodExample.java
+D:\wwz\acc\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\model\ImageModel.java
 D:\wwz\acc\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\storage\StorageFileNotFoundException.java
 D:\wwz\acc\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\service\OrderService.java
 D:\wwz\acc\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\authorization\manager\TokenManager.java

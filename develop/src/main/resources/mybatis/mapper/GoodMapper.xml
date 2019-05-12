@@ -497,25 +497,25 @@
   <select id="findGoodsPagedByType" resultMap="ListResultMap">
   	select * from (
   	<include refid="Goods_Query"/>
-  	) t where status = '拍卖中' and type=#{type} order by ${sort}
+  	) t where status = '拍卖中' and type=#{type} order by ${sort}, good_id
   	limit #{offset}, #{pageSize}
   </select>
   <select id="findGoodsPagedByCategory" resultMap="ListResultMap">
   	select * from (
   	<include refid="Goods_Query"/>
-  	) t where status = '拍卖中' order by deadline desc
+  	) t where status = '拍卖中' order by deadline desc, good_name
   	limit #{offset}, #{pageSize}
   </select>
   <select id="findGoodsPagedByCategoryFirst" resultMap="ListResultMap">
   	select * from (
   	<include refid="Goods_Query"/>
-  	) t where status = '拍卖中' and category_first_id = #{categoryFirstId} order by deadline desc
+  	) t where status = '拍卖中' and category_first_id = #{categoryFirstId} order by deadline desc, good_name
   	limit #{offset}, #{pageSize}
   </select>
   <select id="findGoodsPagedByCategorySecond" resultMap="ListResultMap">
   	select * from (
   	<include refid="Goods_Query"/>
-  	) t where status = '拍卖中' and category_second_id = #{categorySecondId} order by deadline desc
+  	) t where status = '拍卖中' and category_second_id = #{categorySecondId} order by deadline desc, good_name
   	limit #{offset}, #{pageSize}
   </select>
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">

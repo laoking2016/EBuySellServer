@@ -1,6 +1,10 @@
 package com.greyu.ysj.controller;
 
+import com.google.gson.Gson;
 import com.greyu.ysj.config.Constants;
+import com.greyu.ysj.entity.Good;
+import com.greyu.ysj.mapper.GoodMapper;
+import com.greyu.ysj.model.ImageModel;
 import com.greyu.ysj.model.ResultModel;
 import com.greyu.ysj.storage.StorageService;
 import com.greyu.ysj.utils.FileUtil;
@@ -25,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,4 +64,46 @@ public class UploadController {
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
+	
+	@Autowired
+	private GoodMapper goodMapper;
+	
+	/*@RequestMapping(value = "/api/v2/icon", method = RequestMethod.PATCH)
+	public String handleIconFix(@RequestParam("page") Integer page) throws IOException{
+		int pageSize = 10;
+    	
+    	int offset = (page - 1) * pageSize;
+    	
+    	List<Good> goods = goodMapper.findGoodsPagedByCategory(offset, pageSize);
+    	
+    	
+    	for(Good good : goods) {
+    		Good goodDb = goodMapper.findById(good.getGoodId());
+    		
+    		if(goodDb == null){
+    			continue;
+    		}
+    		
+    		String jsonImages = goodDb.getImages();
+    		Gson gson = new Gson();
+        	ImageModel[] images = gson.fromJson(jsonImages, ImageModel[].class);
+        	for(ImageModel image : images) {
+       		
+        		String[] arr = image.getImage().split("/");
+        		
+        		String iconName = arr[0] + "/icon_" + arr[1];    		
+        		image.setIcon(iconName);
+        		
+        		storageService.storeIcon(arr[0], arr[1]);
+        		
+        	}
+    		
+        	jsonImages = gson.toJson(images);
+        	goodDb.setImages(jsonImages);
+        	
+        	goodMapper.update(goodDb);
+    	}
+    	
+		return Integer.toString(goods.size());
+	}*/
 }

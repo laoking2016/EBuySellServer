@@ -123,6 +123,7 @@ com\greyu\ysj\entity\GoodExample$GeneratedCriteria.class
 com\greyu\ysj\authorization\resolvers\CurrentUserIdMethodArgumentResolver.class
 com\greyu\ysj\entity\CategoryFirst.class
 com\greyu\ysj\authorization\annotation\CurrentUserId.class
+com\greyu\ysj\model\ImageModel.class
 com\greyu\ysj\entity\GoodExample$Criterion.class
 com\greyu\ysj\controller\CategoryFirstController.class
 com\greyu\ysj\mapper\OrderMapper.class

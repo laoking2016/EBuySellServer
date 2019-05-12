@@ -122,7 +122,7 @@
   <sql id="Goods_Query">
 	select distinct
 	t1.good_id, t1.category_second_id, t1.good_name, t1.image, t1.price, t1.original_price, t1.inventory, 
-	t1.sold_count, t1.spec, t1.origin, t1.type, t1.images, t1.postage, t1.deadline, t1.description, t1.price_user, t1.price_date, t1.price_count, t1.stock_count, t1.supplier, t1.publish_date, t1.next_bid, t1.agent_bid,
+	t1.sold_count, t1.spec, t1.origin, t1.type, t1.images, t1.postage, t1.description, t1.price_user, t1.price_date, t1.price_count, t1.stock_count, t1.supplier, t1.publish_date, t1.next_bid, t1.agent_bid,
 	case when 
 		t1.deadline > CURRENT_TIMESTAMP
 	then '拍卖中' 
@@ -133,7 +133,8 @@
 		end 
 	end status,
 	t2.top_price,
-	t3.category_first_id
+	t3.category_first_id,
+	case t1.type when '拍卖' then t1.deadline else t1.publish_date end deadline
 	from tb_good t1 left join 
 	(select t1.*, t2.buy_price top_price, t2.order_count from tb_order t1 inner join (select good_id, count(order_id) order_count, max(buy_price) buy_price from tb_order group by good_id) t2 on t1.good_id = t2.good_id and t1.buy_price = t2.buy_price) t2 
 	on t1.good_id = t2.good_id 
@@ -494,9 +495,27 @@
   	limit #{offset}, #{pageSize}
   </select>
   <select id="findGoodsPagedByType" resultMap="ListResultMap">
-  	select t.* from (
+  	select * from (
   	<include refid="Goods_Query"/>
-  	) t where t.status = '拍卖中' and t.type=#{type} order by t.publish_date desc, t.good_name
+  	) t where status = '拍卖中' and type=#{type} order by ${sort}, good_id
+  	limit #{offset}, #{pageSize}
+  </select>
+  <select id="findGoodsPagedByCategory" resultMap="ListResultMap">
+  	select * from (
+  	<include refid="Goods_Query"/>
+  	) t where status = '拍卖中' order by deadline desc, good_name
+  	limit #{offset}, #{pageSize}
+  </select>
+  <select id="findGoodsPagedByCategoryFirst" resultMap="ListResultMap">
+  	select * from (
+  	<include refid="Goods_Query"/>
+  	) t where status = '拍卖中' and category_first_id = #{categoryFirstId} order by deadline desc, good_name
+  	limit #{offset}, #{pageSize}
+  </select>
+  <select id="findGoodsPagedByCategorySecond" resultMap="ListResultMap">
+  	select * from (
+  	<include refid="Goods_Query"/>
+  	) t where status = '拍卖中' and category_second_id = #{categorySecondId} order by deadline desc, good_name
   	limit #{offset}, #{pageSize}
   </select>
   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">

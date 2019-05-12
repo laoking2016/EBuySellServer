@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
 import com.greyu.ysj.authorization.annotation.Authorization;
 import com.greyu.ysj.config.Constants;
 import com.greyu.ysj.config.ResultStatus;
@@ -31,6 +31,7 @@ import com.greyu.ysj.mapper.GoodMapper;
 import com.greyu.ysj.mapper.OrderMapper;
 import com.greyu.ysj.mapper.QuestionMapper;
 import com.greyu.ysj.model.GoodModel;
+import com.greyu.ysj.model.ImageModel;
 import com.greyu.ysj.model.ResultModel;
 import com.greyu.ysj.service.GoodService;
 
@@ -263,18 +264,18 @@ public class GoodController {
     public ResponseEntity<ResultModel> findCategoryGoods(@RequestParam("first") Integer first, @RequestParam("second") Integer second, @RequestParam("page") Integer page){
     	int pageSize = 10;
     	
-    	int offset = (page = 1) * pageSize;
+    	int offset = (page - 1) * pageSize;
     	
     	List<Good> goods = null;
     	
     	if(first == -1 && second == -1) {
-    		goods = goodMapper.findGoodsPagedByCategory(offset, page);
+    		goods = goodMapper.findGoodsPagedByCategory(offset, pageSize);
     	}else {
     		if(first != -1) {
-    			goods = goodMapper.findGoodsPagedByCategoryFirst(first, offset, page);
+    			goods = goodMapper.findGoodsPagedByCategoryFirst(first, offset, pageSize);
     		}
     		if(second != -1) {
-    			goods = goodMapper.findGoodsPagedByCategorySecond(second, offset, page);
+    			goods = goodMapper.findGoodsPagedByCategorySecond(second, offset, pageSize);
     		}
     	}
     	
@@ -442,8 +443,18 @@ public class GoodController {
     	
     	Date now = new Date();
     	
-    	good.setStatus("拍卖中");
+    	String jsonImages = good.getImages();
+    	Gson gson = new Gson();
+    	ImageModel[] images = gson.fromJson(jsonImages, ImageModel[].class);
+    	for(ImageModel image : images) {
+    		String[] arr = image.getImage().split("/");
+    		String iconName = arr[0] + "/icon_" + arr[1];    		
+    		image.setIcon(iconName);
+    	}
+    	jsonImages = gson.toJson(images);
+    	good.setImages(jsonImages);
     	
+    	good.setStatus("拍卖中");
     	good.setType(type);
     	good.setSupplier(currentUserId);
     	good.setPublishDate(now);

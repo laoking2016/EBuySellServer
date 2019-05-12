@@ -24,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.greyu.ysj.utils.FileUtil;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 @Service
 public class FileSystemStorageService implements StorageService {
 
@@ -37,6 +39,22 @@ public class FileSystemStorageService implements StorageService {
     }
     
     @Override
+    public void storeIcon(String folder, String filename) throws IOException {
+    	
+    	new File(root + "/" + folder).mkdirs();
+    	Path path = Paths.get(root + "/" + folder);
+    	
+    	String thumbnailName = "icon_" + filename;
+    	
+    	try {
+    		Thumbnails.of(path.resolve(filename).toString()).scale(0.2f).toFile(path.resolve(thumbnailName).toString());
+    	}catch(IOException e) {
+    		throw new StorageException("Failed to store file " + filename, e);
+    	}
+    	
+    }	
+    
+    @Override
     public String store(MultipartFile file) throws IOException, NoSuchAlgorithmException {
     	
    	
@@ -44,7 +62,6 @@ public class FileSystemStorageService implements StorageService {
     	String folder = formator.format(new Date());
     	
     	new File(root + "/" + folder).mkdirs();
-    	
     	Path path = Paths.get(root + "/" + folder);
     
     	InputStream is =  file.getInputStream();
@@ -54,6 +71,7 @@ public class FileSystemStorageService implements StorageService {
     	String ext = FilenameUtils.getExtension(file.getOriginalFilename());
     	
     	String filename = md5 + "." + ext;
+    	String thumbnailName = "icon_" + filename;
     	
         try {
             if (file.isEmpty()) {
@@ -65,8 +83,10 @@ public class FileSystemStorageService implements StorageService {
                         "Cannot store file with relative path outside current directory "
                                 + filename);
             }
+            
             Files.copy(file.getInputStream(), path.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
+            Thumbnails.of(path.resolve(filename).toString()).scale(0.2f).toFile(path.resolve(thumbnailName).toString());
             
             return folder + "/" + filename;
         }
