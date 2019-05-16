@@ -1,7 +1,5 @@
 package com.greyu.ysj.model;
 
-import org.omg.PortableInterceptor.INACTIVE;
-
 /**
  * @Description:
  * @Author: gre_yu@163.com
