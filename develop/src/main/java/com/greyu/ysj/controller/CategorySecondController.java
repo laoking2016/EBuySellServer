@@ -72,9 +72,7 @@ public class CategorySecondController {
     @RequestMapping(value = "/admin/v1/category/second", method = RequestMethod.POST)
     @Authorization
     public ResponseEntity<ResultModel> addCategory(Integer categoryFirstId, String categoryName, MultipartFile imageFile) {
-        System.out.println(categoryFirstId);
-        System.out.println(categoryName);
-        System.out.println(imageFile);
+        
         
         if (categoryName == null || categoryFirstId == null) {
             return new ResponseEntity<ResultModel>(ResultModel.error(ResultStatus.DATA_NOT_NULL), HttpStatus.BAD_REQUEST);
@@ -118,7 +116,7 @@ public class CategorySecondController {
     @RequestMapping(value = "/admin/v1/category/second/{categorySecondId}", method = RequestMethod.DELETE)
     @Authorization
     public ResponseEntity<ResultModel> deleteCategory(@PathVariable Integer categorySecondId) {
-        System.out.println("delete");
+        
         ResultModel resultModel = this.categorySecondService.delete(categorySecondId);
 
         if (resultModel.getCode() == -1002) {

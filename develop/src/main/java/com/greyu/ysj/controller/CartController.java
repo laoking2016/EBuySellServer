@@ -44,8 +44,7 @@ public class CartController {
     @RequestMapping(value = "/user/v1/user/{userId}/cart", method = RequestMethod.POST)
     @Authorization
     public ResponseEntity<ResultModel> addCart(@PathVariable Integer userId, Integer goodId, Integer count) {
-        System.out.println(count);
-        System.out.println(goodId);
+        
         if (null == userId) {
             return new ResponseEntity<ResultModel>(ResultModel.error(ResultStatus.USER_NOT_FOUND), HttpStatus.NOT_FOUND);
         }

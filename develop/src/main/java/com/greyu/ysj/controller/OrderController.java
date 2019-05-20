@@ -61,7 +61,7 @@ public class OrderController {
     @RequestMapping(value = "/user/v1/user/{userId}/order", method = RequestMethod.GET)
     @Authorization
     public ResponseEntity<ResultModel> getOrderByUserId(@PathVariable Integer userId, Integer status) {
-        System.out.println(status);
+        
         ResultModel resultModel = this.orderService.getOrderByUserId(userId ,status);
         return new ResponseEntity<ResultModel>(resultModel, HttpStatus.OK);
     }

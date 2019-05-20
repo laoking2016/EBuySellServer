@@ -53,8 +53,7 @@ public class AddressController {
     @RequestMapping(value = "/{userId}/address/{addressId}", method = RequestMethod.GET)
     @Authorization
     public ResponseEntity<ResultModel> getOne(@PathVariable Integer userId, @PathVariable Integer addressId) {
-        System.out.println(userId);
-        System.out.println(addressId);
+        
         ResultModel resultModel = this.addressService.getOne(userId, addressId);
 
         if (resultModel.getCode() == -1002) {
@@ -73,7 +72,7 @@ public class AddressController {
     @RequestMapping(value = "/{userId}/address", method = RequestMethod.POST)
     @Authorization
     public ResponseEntity<ResultModel> addAddress(@PathVariable Integer userId, Address newAddress) {
-        System.out.println(newAddress);
+        
         ResultModel resultModel = this.addressService.save(newAddress);
 
         if (resultModel.getCode() == -1002) {
@@ -98,7 +97,7 @@ public class AddressController {
      */
     @RequestMapping(value = "/{userId}/address/{addressId}", method = RequestMethod.POST)
     public ResponseEntity<ResultModel> updateAddress(@PathVariable Integer userId, @PathVariable Integer addressId, Address address) {
-        System.out.println(address);
+        
         ResultModel resultModel = this.addressService.update(address);
 
         if (resultModel.getCode() == -1002) {
@@ -110,7 +109,7 @@ public class AddressController {
 
     @RequestMapping(value = "/{userId}/address/{addressId}", method = RequestMethod.DELETE)
     public ResponseEntity<ResultModel> deleteAddress(@PathVariable Integer userId, @PathVariable Integer addressId, Address address){
-        System.out.println(address);
+        
         ResultModel resultModel = this.addressService.delete(address);
 
         if (resultModel.getCode() == -1002) {

@@ -11,6 +11,7 @@ D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\config\W
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\controller\AdminTokenController.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\controller\OrderController.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\authorization\annotation\CurrentUserId.java
+D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\mapper\ConfigurationMapper.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\service\AdministratorService.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\Question.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\OrderDetailExample.java
@@ -78,6 +79,7 @@ D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\controll
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\storage\StorageService.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\mapper\CartMapper.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\authorization\model\WechatApiResult.java
+D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\Configuration.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\authorization\model\TokenModel.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\utils\FileUtil.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\mapper\OrderDetailMapper.java
@@ -87,6 +89,7 @@ D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\controll
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\entity\Good.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\controller\AdvController.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\controller\CategorySecondController.java
+D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\controller\ConfigurationController.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\mapper\AdvSwiperMapper.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\mapper\MessageMapper.java
 D:\wwz\codes\auction\eBuySellServer\develop\src\main\java\com\greyu\ysj\mapper\OrderMapper.java

@@ -62,10 +62,7 @@ public class GoodController {
      */
     @RequestMapping(value = "/user/v1/goods", method = RequestMethod.GET)
     public ResponseEntity<ResultModel> getAllGoodsOnShell(Integer page, Integer rows, String orderBy, Good good) {
-        System.out.println(page);
-        System.out.println(rows);
-        System.out.println(orderBy);
-        System.out.println(good);
+        
         List<Good> goodList = this.goodService.getAllGoodsOnShell(page, rows, orderBy, good);
 
         return new ResponseEntity<ResultModel>(ResultModel.ok(goodList), HttpStatus.OK);
@@ -130,7 +127,7 @@ public class GoodController {
      */
     @RequestMapping(value = "/user/v1/categories/{categoryId}/goods", method = RequestMethod.GET)
     public ResponseEntity<ResultModel> getCategoryGoods(@PathVariable Integer categoryId, Integer page, Integer rows, Good good) {
-        System.out.println(good);
+        
 
         List<Good> goodList = this.goodService.getCategoryGoods(page, rows, good);
 
@@ -146,7 +143,7 @@ public class GoodController {
     @RequestMapping(value = "/admin/v1/goods/{goodId}", method = RequestMethod.PATCH)
     @Authorization
     public ResponseEntity<ResultModel> updateCategory(@PathVariable Integer goodId, Good good) {
-        System.out.println(good);
+        
         ResultModel resultModel = this.goodService.update(goodId, good);
 
         if (resultModel.getCode() == -1002) {
@@ -380,6 +377,8 @@ public class GoodController {
     	if(request.getAttribute(Constants.CURRENT_USER_ID) != null) {
     		currentUserId = (int)request.getAttribute(Constants.CURRENT_USER_ID);
     	}
+    	
+    	
     	
     	if("拍卖".equals(type)) {
     		order.setBuyCount(1);

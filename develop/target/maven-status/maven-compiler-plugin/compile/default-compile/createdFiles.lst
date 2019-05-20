@@ -3,8 +3,10 @@ com\greyu\ysj\model\StatisticsOrder.class
 com\greyu\ysj\entity\OrderDetailExample$GeneratedCriteria.class
 com\greyu\ysj\entity\CartDetail.class
 com\greyu\ysj\storage\StorageService.class
+com\greyu\ysj\entity\Configuration.class
 com\greyu\ysj\entity\CategoryFirstExample$GeneratedCriteria.class
 com\greyu\ysj\authorization\interceptor\AuthorizationInterceptor.class
+com\greyu\ysj\controller\ConfigurationController.class
 com\greyu\ysj\entity\OrderDetailExample$Criterion.class
 com\greyu\ysj\entity\UserExample$Criterion.class
 META-INF\spring-configuration-metadata.json
@@ -109,6 +111,7 @@ com\greyu\ysj\config\MultipartConfig.class
 com\greyu\ysj\controller\UserTokenController.class
 com\greyu\ysj\authorization\model\TokenModel.class
 com\greyu\ysj\entity\GoodExample$Criteria.class
+com\greyu\ysj\mapper\ConfigurationMapper.class
 com\greyu\ysj\entity\CategoryFirstExample.class
 com\greyu\ysj\mapper\AdministratorMapper.class
 com\greyu\ysj\service\impl\AddressServiceImpl.class

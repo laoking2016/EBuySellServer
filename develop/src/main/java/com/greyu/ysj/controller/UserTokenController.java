@@ -55,7 +55,7 @@ public class UserTokenController {
     @RequestMapping(method = RequestMethod.DELETE)
     @Authorization
     public ResponseEntity<ResultModel> logout(@CurrentUserId Integer userId) {
-        System.out.println("userId: " + userId);
+        
         this.tokenManager.deleteToken(userId);
         return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
     }
