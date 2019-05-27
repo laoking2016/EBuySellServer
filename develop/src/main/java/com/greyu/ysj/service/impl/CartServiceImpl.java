@@ -60,8 +60,6 @@ public class CartServiceImpl implements CartService{
             c.setGood(good);
         }
         cart.setGoods(cartDetails);
-
-        System.out.println(cart);
         return cart;
     }
 
