@@ -295,9 +295,11 @@ public class GoodController {
     @RequestMapping(value = "/user/v2/goods/history", method = RequestMethod.GET)
     public ResponseEntity<ResultModel> findHistoryGoods(@RequestParam("q") String q, @RequestParam("page") Integer page){
     	
-    	int offset = (page - 1) * Constants.PAGE_SIZE;
+    	int pageSize = 10;
+    	
+    	int offset = (page - 1) * pageSize;
     	List<Good> goods = 
-    			this.goodMapper.findHistoryGoodsPaged("%" + q + "%", offset, Constants.PAGE_SIZE);
+    			this.goodMapper.findHistoryGoodsPaged("%" + q + "%", offset, pageSize);
     	
     	return new ResponseEntity<ResultModel>(ResultModel.ok(goods), HttpStatus.OK);
     }
@@ -372,24 +374,23 @@ public class GoodController {
     @Transactional
     public synchronized ResponseEntity<ResultModel> submitOrder(@RequestParam("type") String type, @PathVariable Integer goodId, @RequestBody Order order, HttpServletRequest request){
     	
-    	int currentUserId = -1;
+		int currentUserId = -1;
     	
     	if(request.getAttribute(Constants.CURRENT_USER_ID) != null) {
     		currentUserId = (int)request.getAttribute(Constants.CURRENT_USER_ID);
     	}
-    	
-    	
     	
     	if("拍卖".equals(type)) {
     		order.setBuyCount(1);
     	}
     	
     	Date now = new Date();
+    	Timestamp nowTime = new Timestamp(now.getTime());
     	
     	order.setStatus("待支付");
     	order.setType(type);
     	order.setBuyer(currentUserId);
-    	order.setBuyDate(new Timestamp(now.getTime()));
+    	order.setBuyDate(nowTime);
     	
     	if("拍卖".equals(order.getType())) {
     		Order searchedOrder = 
@@ -397,6 +398,10 @@ public class GoodController {
         	
     		Good good = this.goodMapper.findById(goodId);
     		if(good != null) {
+    			
+    			if(order.getBuyDate().compareTo(good.getDeadline()) > 0) {
+					return new ResponseEntity<ResultModel>(ResultModel.error(ResultStatus.BUYDATE_NOT_VALID), HttpStatus.BAD_REQUEST);
+				}
     			if(searchedOrder == null) {
     				if(order.getBuyPrice() <= good.getNextBid()) {
     					return new ResponseEntity<ResultModel>(ResultModel.error(ResultStatus.PRICE_NOT_VALID), HttpStatus.BAD_REQUEST);
@@ -422,8 +427,8 @@ public class GoodController {
     		this.orderMapper.insert(order);
     	}
     	
-    	
     	return new ResponseEntity<ResultModel>(ResultModel.ok("success"), HttpStatus.OK);
+    	
     }
     
     @RequestMapping(value = "/user/v2/good", method = RequestMethod.POST)

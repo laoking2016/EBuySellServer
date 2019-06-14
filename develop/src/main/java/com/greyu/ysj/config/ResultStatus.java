@@ -28,7 +28,8 @@ public enum ResultStatus {
     USER_NOT_ALLOWED(-1010, "没有操作权限"),
     IMAGE_NOT_EMPTY(-1004, "图片不能为空"),
     ADV_NOT_FOUND(-1002, "广告不存在"),
-    PRICE_NOT_VALID(-2001, "必须高于目前出价");
+    PRICE_NOT_VALID(-2001, "必须高于目前出价"),
+	BUYDATE_NOT_VALID(-3001, "超过了拍买期限");
 
     /**
      * 返回码

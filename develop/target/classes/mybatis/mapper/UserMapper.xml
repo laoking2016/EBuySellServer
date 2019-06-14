@@ -278,7 +278,7 @@
   <select id="findByName" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select
   	<include refid="Base_Column_List"/>
-  	from tb_user where user_name = #{name}
+  	from tb_user where user_name = #{name} order by user_id LIMIT 1
   </select>
   <select id="findById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
   	select
@@ -291,8 +291,8 @@
 	inner join (select good_id, max(buy_price) max_price from tb_order group by good_id) t4 on t4.good_id = t2.good_id and t4.max_price = t2.buy_price
 	where t3.supplier = #{supplier}
   </select>
-  <select id="findAll" resultMap="BaseResultMap">
-  	select * from tb_user order by nick_name
+  <select id="findAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select * from tb_user where nick_name like #{q} order by nick_name
   </select>
   <update id="update" parameterType="com.greyu.ysj.entity.User">
   	update tb_user

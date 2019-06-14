@@ -151,7 +151,7 @@ public class UserController {
     @RequestMapping(value= "/user/v2/user", method = RequestMethod.POST)
     public ResponseEntity<ResultModel> addUser(@RequestBody User user) {
     	
-    	if(user.getOpenId() != null && this.userMapper.findByName(user.getUserName()) != null){
+    	if(this.userMapper.findByName(user.getUserName()) != null){
     		return new ResponseEntity<>(ResultModel.error(ResultStatus.USERNAME_HAS_EXISTS), HttpStatus.CREATED);
     	}
     	
@@ -211,11 +211,9 @@ public class UserController {
     
     @RequestMapping(value = "/user/v2/users", method = RequestMethod.GET)
     @Authorization
-    public ResponseEntity<ResultModel> findAll(HttpServletRequest request) {
+    public ResponseEntity<ResultModel> findAll(@RequestParam("q") String q, HttpServletRequest request) {
 
-    	List<User> users = userMapper.findAll();
+    	List<User> users = userMapper.findAll("%" + q + "%");
     	return new ResponseEntity<ResultModel>(ResultModel.ok(users), HttpStatus.OK);
     }
-    
-    
 }

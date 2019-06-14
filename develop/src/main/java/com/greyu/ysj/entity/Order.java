@@ -136,7 +136,37 @@ public class Order {
     
     private String email;
     
-    public String getEmail() {
+    private String supplierName;
+    
+    private String supplierPhone;
+    
+    private String supplierEmail;
+    
+    public String getSupplierName() {
+		return supplierName;
+	}
+
+	public void setSupplierName(String supplierName) {
+		this.supplierName = supplierName;
+	}
+
+	public String getSupplierPhone() {
+		return supplierPhone;
+	}
+
+	public void setSupplierPhone(String supplierPhone) {
+		this.supplierPhone = supplierPhone;
+	}
+
+	public String getSupplierEmail() {
+		return supplierEmail;
+	}
+
+	public void setSupplierEmail(String supplierEmail) {
+		this.supplierEmail = supplierEmail;
+	}
+
+	public String getEmail() {
 		return email;
 	}
 
